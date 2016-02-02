@@ -1,5 +1,5 @@
-#ifndef BOOST_SMART_PTR_MAKE_SHARED_HPP_INCLUDED
-#define BOOST_SMART_PTR_MAKE_SHARED_HPP_INCLUDED
+#ifndef BOOST_MAKE_SHARED_HPP_INCLUDED
+#define BOOST_MAKE_SHARED_HPP_INCLUDED
 
 //  make_shared_object.hpp
 //
@@ -224,4 +224,4 @@ namespace boost {
 
 } // namespace boost
 
-#endif // #ifndef BOOST_SMART_PTR_MAKE_SHARED_HPP_INCLUDED
+#endif // #ifndef BOOST_MAKE_SHARED_HPP_INCLUDED

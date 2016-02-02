@@ -1,5 +1,5 @@
-#ifndef BOOST_SMART_PTR_BAD_WEAK_PTR_HPP_INCLUDED
-#define BOOST_SMART_PTR_BAD_WEAK_PTR_HPP_INCLUDED
+#ifndef BOOST_BAD_WEAK_PTR_HPP_INCLUDED
+#define BOOST_BAD_WEAK_PTR_HPP_INCLUDED
 
 //
 //  boost/smart_ptr/bad_weak_ptr.hpp
@@ -24,4 +24,4 @@ namespace boost {
 
 } // namespace boost
 
-#endif // #ifndef BOOST_SMART_PTR_BAD_WEAK_PTR_HPP_INCLUDED
+#endif // #ifndef BOOST_BAD_WEAK_PTR_HPP_INCLUDED

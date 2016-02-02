@@ -1,5 +1,5 @@
-#ifndef BOOST_SMART_PTR_SHARED_PTR_HPP_INCLUDED
-#define BOOST_SMART_PTR_SHARED_PTR_HPP_INCLUDED
+#ifndef BOOST_SHARED_PTR_HPP_INCLUDED
+#define BOOST_SHARED_PTR_HPP_INCLUDED
 
 //
 //  shared_ptr.hpp
@@ -438,7 +438,7 @@ namespace boost {
     {
       return px != 0;
     }
-    
+
     bool operator! () const noexcept
     {
       return px == 0;
@@ -653,4 +653,4 @@ namespace boost {
 
 } // namespace boost
 
-#endif // #ifndef BOOST_SMART_PTR_SHARED_PTR_HPP_INCLUDED
+#endif // #ifndef BOOST_SHARED_PTR_HPP_INCLUDED

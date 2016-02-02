@@ -1,5 +1,5 @@
-#ifndef BOOST_CORE_CHECKED_DELETE_HPP
-#define BOOST_CORE_CHECKED_DELETE_HPP
+#ifndef BOOST_DETAIL_CHECKED_DELETE_HPP
+#define BOOST_DETAIL_CHECKED_DELETE_HPP
 
 //
 //  boost/checked_delete.hpp
@@ -57,4 +57,4 @@ namespace boost {
 
 } // namespace boost
 
-#endif // #ifndef BOOST_CORE_CHECKED_DELETE_HPP
+#endif // #ifndef BOOST_DETAIL_CHECKED_DELETE_HPP
