@@ -110,35 +110,6 @@ namespace boost {
       typedef void type;
     };
 
-    // sp_array_access, return type of operator[]
-
-    template <class T>
-    struct sp_array_access {
-      typedef void type;
-    };
-
-    template <class T>
-    struct sp_array_access<T[]> {
-      typedef T &type;
-    };
-
-    template <class T, std::size_t N>
-    struct sp_array_access<T[N]> {
-      typedef T &type;
-    };
-
-    // sp_extent, for operator[] index check
-
-    template <class T>
-    struct sp_extent {
-      enum _vt { value = 0 };
-    };
-
-    template <class T, std::size_t N>
-    struct sp_extent<T[N]> {
-      enum _vt { value = N };
-    };
-
     // enable_shared_from_this support
 
     template <class X, class Y, class T>
@@ -418,15 +389,6 @@ namespace boost {
     typename boost::detail::sp_member_access<T>::type operator->() const {
       assert(px != 0);
       return px;
-    }
-
-    // never throws (but has a BOOST_ASSERT in it, so not marked with noexcept)
-    typename boost::detail::sp_array_access<T>::type operator[](std::ptrdiff_t i) const {
-      assert(px != 0);
-      assert(i >= 0 && (i < boost::detail::sp_extent<T>::value
-                        || boost::detail::sp_extent<T>::value == 0));
-
-      return static_cast<typename boost::detail::sp_array_access<T>::type>(px[i]);
     }
 
     element_type *get() const noexcept {
