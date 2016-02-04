@@ -615,4 +615,13 @@ namespace boost {
 
 } // namespace boost
 
+namespace std {
+  template <class T>
+  struct hash<boost::shared_ptr<T>> {
+    inline size_t operator()(const boost::shared_ptr<T> &p) const noexcept {
+      return hash<T *>()(p.get());
+    }
+  };
+}
+
 #endif // #ifndef BOOST_SHARED_PTR_HPP_INCLUDED
