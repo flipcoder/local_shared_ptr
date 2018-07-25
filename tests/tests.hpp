@@ -1,7 +1,7 @@
 #ifndef tests_h
 #define tests_h
 
-namespace shared_ptr_test {
+namespace local_shared_ptr_test {
   extern int main();
 }
 
@@ -41,15 +41,15 @@ namespace get_deleter_test {
   extern int main();
 }
 
-namespace make_shared_esft_test {
+namespace make_local_shared_esft_test {
   extern int main();
 }
 
-namespace make_shared_perfect_forwarding_test {
+namespace make_local_shared_perfect_forwarding_test {
   extern int main();
 }
 
-namespace make_shared_test {
+namespace make_local_shared_test {
   extern int main();
 }
 
@@ -57,35 +57,35 @@ namespace shared_from_this_test {
   extern int main();
 }
 
-namespace shared_ptr_alias_test {
+namespace local_shared_ptr_alias_test {
   extern int main();
 }
 
-namespace shared_ptr_alloc2_test {
+namespace local_shared_ptr_alloc2_test {
   extern int main();
 }
 
-namespace shared_ptr_alloc3_test {
+namespace local_shared_ptr_alloc3_test {
   extern int main();
 }
 
-namespace shared_ptr_alloc11_test {
+namespace local_shared_ptr_alloc11_test {
   extern int main();
 }
 
-namespace shared_ptr_basic_test {
+namespace local_shared_ptr_basic_test {
   extern int main();
 }
 
-namespace shared_ptr_convertible_test {
+namespace local_shared_ptr_convertible_test {
   extern int main();
 }
 
-namespace shared_ptr_move_test {
+namespace local_shared_ptr_move_test {
   extern int main();
 }
 
-namespace shared_ptr_rv_test {
+namespace local_shared_ptr_rv_test {
   extern int main();
 }
 

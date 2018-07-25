@@ -9,37 +9,37 @@
 //
 
 
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
+#include <kit/enable_shared_from_this.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include "lightweight_test.hpp"
 
 //
 
 namespace esft_void_test {
 
-class X: public boost::enable_shared_from_this<X>
+class X: public kit::enable_shared_from_this<X>
 {
 };
 
 int main()
 {
-    boost::shared_ptr< void const volatile > pv( new X );
-    boost::shared_ptr< void > pv2 = boost::const_pointer_cast< void >( pv );
-    boost::shared_ptr< X > px = boost::static_pointer_cast< X >( pv2 );
+    kit::local_shared_ptr< void const volatile > pv( new X );
+    kit::local_shared_ptr< void > pv2 = kit::const_pointer_cast< void >( pv );
+    kit::local_shared_ptr< X > px = kit::static_pointer_cast< X >( pv2 );
 
     try
     {
-        boost::shared_ptr< X > qx = px->shared_from_this();
+        kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-        BOOST_TEST( px == qx );
-        BOOST_TEST( !( px < qx ) && !( qx < px ) );
+        KIT_TEST( px == qx );
+        KIT_TEST( !( px < qx ) && !( qx < px ) );
     }
-    catch( boost::bad_weak_ptr const& )
+    catch( kit::bad_local_weak_ptr const& )
     {
-        BOOST_ERROR( "px->shared_from_this() failed" );
+        KIT_ERROR( "px->shared_from_this() failed" );
     }
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

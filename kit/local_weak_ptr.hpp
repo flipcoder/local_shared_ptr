@@ -1,8 +1,8 @@
-#ifndef BOOST_WEAK_PTR_HPP_INCLUDED
-#define BOOST_WEAK_PTR_HPP_INCLUDED
+#ifndef KIT_WEAK_PTR_HPP_INCLUDED
+#define KIT_WEAK_PTR_HPP_INCLUDED
 
 //
-//  weak_ptr.hpp
+//  local_weak_ptr.hpp
 //
 //  Copyright (c) 2001, 2002, 2003 Peter Dimov
 //
@@ -13,22 +13,22 @@
 //  See http://www.boost.org/libs/smart_ptr/weak_ptr.htm for documentation.
 //
 
-#include <boost/detail/shared_count.hpp>
-#include <boost/shared_ptr.hpp>
+#include <kit/detail/shared_count.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include <memory> // boost.TR1 include order fix
 
-namespace boost {
+namespace kit {
 
   template <class T>
-  class weak_ptr {
+  class local_weak_ptr {
   private:
     // Borland 5.5.1 specific workarounds
-    typedef weak_ptr<T> this_type;
+    typedef local_weak_ptr<T> this_type;
 
   public:
-    typedef typename boost::detail::sp_element<T>::type element_type;
+    typedef typename kit::detail::sp_element<T>::type element_type;
 
-    weak_ptr() noexcept : px(0),
+    local_weak_ptr() noexcept : px(0),
                           pn() // never throws in 1.30+
     {
     }
@@ -37,10 +37,10 @@ namespace boost {
 
     // ... except in C++0x, move disables the implicit copy
 
-    weak_ptr(weak_ptr const &r) noexcept : px(r.px), pn(r.pn) {
+    local_weak_ptr(local_weak_ptr const &r) noexcept : px(r.px), pn(r.pn) {
     }
 
-    weak_ptr &operator=(weak_ptr const &r) noexcept {
+    local_weak_ptr &operator=(local_weak_ptr const &r) noexcept {
       px = r.px;
       pn = r.pn;
       return *this;
@@ -50,7 +50,7 @@ namespace boost {
     //  The "obvious" converting constructor implementation:
     //
     //  template<class Y>
-    //  weak_ptr(weak_ptr<Y> const & r): px(r.px), pn(r.pn) // never throws
+    //  local_weak_ptr(local_weak_ptr<Y> const & r): px(r.px), pn(r.pn) // never throws
     //  {
     //  }
     //
@@ -64,43 +64,43 @@ namespace boost {
     //
 
     template <class Y>
-    weak_ptr(weak_ptr<Y> const &r, typename boost::detail::sp_enable_if_convertible<Y, T>::type
-                                   = boost::detail::sp_empty()) noexcept : px(r.lock().get()),
+    local_weak_ptr(local_weak_ptr<Y> const &r, typename kit::detail::sp_enable_if_convertible<Y, T>::type
+                                   = kit::detail::sp_empty()) noexcept : px(r.lock().get()),
                                                                            pn(r.pn) {
-      boost::detail::sp_assert_convertible<Y, T>();
+      kit::detail::sp_assert_convertible<Y, T>();
     }
 
     template <class Y>
-    weak_ptr(weak_ptr<Y> &&r, typename boost::detail::sp_enable_if_convertible<Y, T>::type
-                              = boost::detail::sp_empty()) noexcept
+    local_weak_ptr(local_weak_ptr<Y> &&r, typename kit::detail::sp_enable_if_convertible<Y, T>::type
+                              = kit::detail::sp_empty()) noexcept
         : px(r.lock().get()),
-          pn(static_cast<boost::detail::weak_count &&>(r.pn)) {
-      boost::detail::sp_assert_convertible<Y, T>();
+          pn(static_cast<kit::detail::weak_count &&>(r.pn)) {
+      kit::detail::sp_assert_convertible<Y, T>();
       r.px = 0;
     }
 
     // for better efficiency in the T == Y case
-    weak_ptr(weak_ptr &&r) noexcept : px(r.px),
-                                      pn(static_cast<boost::detail::weak_count &&>(r.pn)) {
+    local_weak_ptr(local_weak_ptr &&r) noexcept : px(r.px),
+                                      pn(static_cast<kit::detail::weak_count &&>(r.pn)) {
       r.px = 0;
     }
 
     // for better efficiency in the T == Y case
-    weak_ptr &operator=(weak_ptr &&r) noexcept {
-      this_type(static_cast<weak_ptr &&>(r)).swap(*this);
+    local_weak_ptr &operator=(local_weak_ptr &&r) noexcept {
+      this_type(static_cast<local_weak_ptr &&>(r)).swap(*this);
       return *this;
     }
 
     template <class Y>
-    weak_ptr(shared_ptr<Y> const &r, typename boost::detail::sp_enable_if_convertible<Y, T>::type
-                                     = boost::detail::sp_empty()) noexcept : px(r.px),
+    local_weak_ptr(local_shared_ptr<Y> const &r, typename kit::detail::sp_enable_if_convertible<Y, T>::type
+                                     = kit::detail::sp_empty()) noexcept : px(r.px),
                                                                              pn(r.pn) {
-      boost::detail::sp_assert_convertible<Y, T>();
+      kit::detail::sp_assert_convertible<Y, T>();
     }
 
     template <class Y>
-    weak_ptr &operator=(weak_ptr<Y> const &r) noexcept {
-      boost::detail::sp_assert_convertible<Y, T>();
+    local_weak_ptr &operator=(local_weak_ptr<Y> const &r) noexcept {
+      kit::detail::sp_assert_convertible<Y, T>();
 
       px = r.lock().get();
       pn = r.pn;
@@ -109,14 +109,14 @@ namespace boost {
     }
 
     template <class Y>
-    weak_ptr &operator=(weak_ptr<Y> &&r) noexcept {
-      this_type(static_cast<weak_ptr<Y> &&>(r)).swap(*this);
+    local_weak_ptr &operator=(local_weak_ptr<Y> &&r) noexcept {
+      this_type(static_cast<local_weak_ptr<Y> &&>(r)).swap(*this);
       return *this;
     }
 
     template <class Y>
-    weak_ptr &operator=(shared_ptr<Y> const &r) noexcept {
-      boost::detail::sp_assert_convertible<Y, T>();
+    local_weak_ptr &operator=(local_shared_ptr<Y> const &r) noexcept {
+      kit::detail::sp_assert_convertible<Y, T>();
 
       px = r.px;
       pn = r.pn;
@@ -124,8 +124,8 @@ namespace boost {
       return *this;
     }
 
-    shared_ptr<T> lock() const noexcept {
-      return shared_ptr<T>(*this, boost::detail::sp_nothrow_tag());
+    local_shared_ptr<T> lock() const noexcept {
+      return local_shared_ptr<T>(*this, kit::detail::sp_nothrow_tag());
     }
 
     long use_count() const noexcept {
@@ -136,7 +136,7 @@ namespace boost {
       return pn.use_count() == 0;
     }
 
-    bool _empty() const // extension, not in std::weak_ptr
+    bool _empty() const // extension, not in std::local_weak_ptr
     {
       return pn.empty();
     }
@@ -152,18 +152,18 @@ namespace boost {
     }
 
     template <typename Y>
-    void _internal_aliasing_assign(weak_ptr<Y> const &r, element_type *px2) {
+    void _internal_aliasing_assign(local_weak_ptr<Y> const &r, element_type *px2) {
       px = px2;
       pn = r.pn;
     }
 
     template <class Y>
-    bool owner_before(weak_ptr<Y> const &rhs) const noexcept {
+    bool owner_before(local_weak_ptr<Y> const &rhs) const noexcept {
       return pn < rhs.pn;
     }
 
     template <class Y>
-    bool owner_before(shared_ptr<Y> const &rhs) const noexcept {
+    bool owner_before(local_shared_ptr<Y> const &rhs) const noexcept {
       return pn < rhs.pn;
     }
 
@@ -172,25 +172,25 @@ namespace boost {
 
   private:
     template <class Y>
-    friend class weak_ptr;
+    friend class local_weak_ptr;
     template <class Y>
-    friend class shared_ptr;
+    friend class local_shared_ptr;
 
     element_type *px; // contained pointer
-    boost::detail::weak_count pn; // reference counter
+    kit::detail::weak_count pn; // reference counter
 
-  }; // weak_ptr
+  }; // local_weak_ptr
 
   template <class T, class U>
-  inline bool operator<(weak_ptr<T> const &a, weak_ptr<U> const &b) noexcept {
+  inline bool operator<(local_weak_ptr<T> const &a, local_weak_ptr<U> const &b) noexcept {
     return a.owner_before(b);
   }
 
   template <class T>
-  void swap(weak_ptr<T> &a, weak_ptr<T> &b) noexcept {
+  void swap(local_weak_ptr<T> &a, local_weak_ptr<T> &b) noexcept {
     a.swap(b);
   }
 
-} // namespace boost
+} // namespace kit
 
-#endif // #ifndef BOOST_WEAK_PTR_HPP_INCLUDED
+#endif // #ifndef KIT_WEAK_PTR_HPP_INCLUDED

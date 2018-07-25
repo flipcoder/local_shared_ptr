@@ -1,4 +1,4 @@
-//  shared_ptr_alloc2_test.cpp
+//  local_shared_ptr_alloc2_test.cpp
 //
 //  Copyright (c) 2005 Peter Dimov
 //
@@ -8,13 +8,13 @@
 
 
 #include "lightweight_test.hpp"
-#include <boost/shared_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include <memory>
 #include <cstddef>
 
 // test_allocator
 
-namespace shared_ptr_alloc2_test {
+namespace local_shared_ptr_alloc2_test {
 
 struct test_allocator_base
 {
@@ -82,9 +82,9 @@ public:
 
     void deallocate( pointer p, size_type n )
     {
-        BOOST_TEST( p == last_pointer_ );
-        BOOST_TEST( n == last_n_ );
-        BOOST_TEST( id_ == last_id_ );
+        KIT_TEST( p == last_pointer_ );
+        KIT_TEST( n == last_n_ );
+        KIT_TEST( id_ == last_id_ );
 
         --count_;
 
@@ -189,38 +189,38 @@ int X::instances = 0;
 
 int main()
 {
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
-    boost::shared_ptr<void> pv( new X, boost::checked_deleter<X>(), std::allocator<X>() );
+    kit::local_shared_ptr<void> pv( new X, kit::checked_deleter<X>(), std::allocator<X>() );
 
-    BOOST_TEST( X::instances == 1 );
+    KIT_TEST( X::instances == 1 );
 
-    pv.reset( new X, boost::checked_deleter<X>(), test_allocator<float>( 42 ) );
+    pv.reset( new X, kit::checked_deleter<X>(), test_allocator<float>( 42 ) );
 
-    BOOST_TEST( X::instances == 1 );
+    KIT_TEST( X::instances == 1 );
 
-    BOOST_TEST( test_allocator_base::last_global_id_ == 42 );
-    BOOST_TEST( test_allocator_base::count_ > 0 );
-
-    pv.reset();
-
-    BOOST_TEST( X::instances == 0 );
-    BOOST_TEST( test_allocator_base::count_ == 0 );
-
-    pv.reset( new X, boost::checked_deleter<X>(), test_allocator<void>( 43 ) );
-
-    BOOST_TEST( X::instances == 1 );
-    BOOST_TEST( test_allocator_base::last_global_id_ == 43 );
-
-    pv.reset( new X, boost::checked_deleter<X>(), std::allocator<void>() );
-
-    BOOST_TEST( X::instances == 1 );
+    KIT_TEST( test_allocator_base::last_global_id_ == 42 );
+    KIT_TEST( test_allocator_base::count_ > 0 );
 
     pv.reset();
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
+    KIT_TEST( test_allocator_base::count_ == 0 );
 
-    return boost::report_errors();
+    pv.reset( new X, kit::checked_deleter<X>(), test_allocator<void>( 43 ) );
+
+    KIT_TEST( X::instances == 1 );
+    KIT_TEST( test_allocator_base::last_global_id_ == 43 );
+
+    pv.reset( new X, kit::checked_deleter<X>(), std::allocator<void>() );
+
+    KIT_TEST( X::instances == 1 );
+
+    pv.reset();
+
+    KIT_TEST( X::instances == 0 );
+
+    return kit::report_errors();
 }
 
 }

@@ -1,2 +1,2 @@
 #!/bin/sh
-clang++ -std=gnu++14 -stdlib=libc++ -I . -o test tests/*.cpp
+clang++ -std=gnu++14 -I . -o test tests/*.cpp

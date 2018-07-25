@@ -7,7 +7,7 @@
 //  http://www.boost.org/LICENSE_1_0.txt
 
 #include "lightweight_test.hpp"
-#include <boost/weak_ptr.hpp>
+#include <kit/local_weak_ptr.hpp>
 
 //
 
@@ -27,44 +27,44 @@ struct Z: public X
 {
 };
 
-int f( boost::weak_ptr<void const> )
+int f( kit::local_weak_ptr<void const> )
 {
     return 1;
 }
 
-int f( boost::weak_ptr<int> )
+int f( kit::local_weak_ptr<int> )
 {
     return 2;
 }
 
-int f( boost::weak_ptr<incomplete> )
+int f( kit::local_weak_ptr<incomplete> )
 {
     return 3;
 }
 
-int g( boost::weak_ptr<X> )
+int g( kit::local_weak_ptr<X> )
 {
     return 4;
 }
 
-int g( boost::weak_ptr<Y> )
+int g( kit::local_weak_ptr<Y> )
 {
     return 5;
 }
 
-int g( boost::weak_ptr<incomplete> )
+int g( kit::local_weak_ptr<incomplete> )
 {
     return 6;
 }
 
 int main()
 {
-    BOOST_TEST( 1 == f( boost::weak_ptr<double>() ) );
-    BOOST_TEST( 1 == f( boost::shared_ptr<double>() ) );
-    BOOST_TEST( 4 == g( boost::weak_ptr<Z>() ) );
-    BOOST_TEST( 4 == g( boost::shared_ptr<Z>() ) );
+    KIT_TEST( 1 == f( kit::local_weak_ptr<double>() ) );
+    KIT_TEST( 1 == f( kit::local_shared_ptr<double>() ) );
+    KIT_TEST( 4 == g( kit::local_weak_ptr<Z>() ) );
+    KIT_TEST( 4 == g( kit::local_shared_ptr<Z>() ) );
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

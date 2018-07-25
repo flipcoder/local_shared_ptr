@@ -7,11 +7,11 @@
 //  http://www.boost.org/LICENSE_1_0.txt
 
 #include "lightweight_test.hpp"
-#include <boost/shared_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
 
 //
 
-namespace shared_ptr_convertible_test {
+namespace local_shared_ptr_convertible_test {
 
 class incomplete;
 
@@ -27,47 +27,47 @@ struct Z: public X
 {
 };
 
-int f( boost::shared_ptr<void const> )
+int f( kit::local_shared_ptr<void const> )
 {
     return 1;
 }
 
-int f( boost::shared_ptr<int> )
+int f( kit::local_shared_ptr<int> )
 {
     return 2;
 }
 
-int f( boost::shared_ptr<incomplete> )
+int f( kit::local_shared_ptr<incomplete> )
 {
     return 3;
 }
 
-int g( boost::shared_ptr<X> )
+int g( kit::local_shared_ptr<X> )
 {
     return 4;
 }
 
-int g( boost::shared_ptr<Y> )
+int g( kit::local_shared_ptr<Y> )
 {
     return 5;
 }
 
-int g( boost::shared_ptr<incomplete> )
+int g( kit::local_shared_ptr<incomplete> )
 {
     return 6;
 }
 
 int main()
 {
-    boost::shared_ptr<double> p1;
-    BOOST_TEST( 1 == f( p1 ) );
-    BOOST_TEST( 1 == f( boost::shared_ptr<double>() ) );
+    kit::local_shared_ptr<double> p1;
+    KIT_TEST( 1 == f( p1 ) );
+    KIT_TEST( 1 == f( kit::local_shared_ptr<double>() ) );
 
-    boost::shared_ptr<Z> p2;
-    BOOST_TEST( 4 == g( p2 ) );
-    BOOST_TEST( 4 == g( boost::shared_ptr<Z>() ) );
+    kit::local_shared_ptr<Z> p2;
+    KIT_TEST( 4 == g( p2 ) );
+    KIT_TEST( 4 == g( kit::local_shared_ptr<Z>() ) );
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

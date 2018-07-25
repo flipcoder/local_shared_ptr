@@ -1,5 +1,5 @@
-#ifndef BOOST_DETAIL_CHECKED_DELETE_HPP
-#define BOOST_DETAIL_CHECKED_DELETE_HPP
+#ifndef KIT_DETAIL_CHECKED_DELETE_HPP
+#define KIT_DETAIL_CHECKED_DELETE_HPP
 
 //
 //  boost/checked_delete.hpp
@@ -15,7 +15,7 @@
 //  See http://www.boost.org/libs/core/doc/html/core/checked_delete.html for documentation.
 //
 
-namespace boost {
+namespace kit {
 
   // verify that types are complete for increased safety
 
@@ -40,8 +40,8 @@ namespace boost {
     typedef T *argument_type;
 
     void operator()(T *x) const {
-      // boost:: disables ADL
-      boost::checked_delete(x);
+      // kit:: disables ADL
+      kit::checked_delete(x);
     }
   };
 
@@ -51,10 +51,10 @@ namespace boost {
     typedef T *argument_type;
 
     void operator()(T *x) const {
-      boost::checked_array_delete(x);
+      kit::checked_array_delete(x);
     }
   };
 
-} // namespace boost
+} // namespace kit
 
-#endif // #ifndef BOOST_DETAIL_CHECKED_DELETE_HPP
+#endif // #ifndef KIT_DETAIL_CHECKED_DELETE_HPP

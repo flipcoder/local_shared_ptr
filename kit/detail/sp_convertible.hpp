@@ -1,5 +1,5 @@
-#ifndef BOOST_DETAIL_SP_CONVERTIBLE_HPP_INCLUDED
-#define BOOST_DETAIL_SP_CONVERTIBLE_HPP_INCLUDED
+#ifndef KIT_DETAIL_SP_CONVERTIBLE_HPP_INCLUDED
+#define KIT_DETAIL_SP_CONVERTIBLE_HPP_INCLUDED
 
 //  detail/sp_convertible.hpp
 //
@@ -11,7 +11,7 @@
 
 #include <cstddef>
 
-namespace boost {
+namespace kit {
 
   namespace detail {
 
@@ -60,6 +60,6 @@ namespace boost {
 
   } // namespace detail
 
-} // namespace boost
+} // namespace kit
 
-#endif // #ifndef BOOST_DETAIL_SP_CONVERTIBLE_HPP_INCLUDED
+#endif // #ifndef KIT_DETAIL_SP_CONVERTIBLE_HPP_INCLUDED

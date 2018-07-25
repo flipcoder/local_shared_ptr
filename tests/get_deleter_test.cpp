@@ -8,7 +8,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <boost/shared_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include "lightweight_test.hpp"
 
 namespace get_deleter_test {
@@ -23,7 +23,7 @@ struct deleter
 
     void operator()(void *)
     {
-        BOOST_TEST(data == 17041);
+        KIT_TEST(data == 17041);
     }
 };
 
@@ -38,62 +38,62 @@ struct X
 int main()
 {
     {
-        boost::shared_ptr<X> p;
+        kit::local_shared_ptr<X> p;
 
-        BOOST_TEST(boost::get_deleter<void>(p) == 0);
-        BOOST_TEST(boost::get_deleter<void const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<int>(p) == 0);
-        BOOST_TEST(boost::get_deleter<int const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<X>(p) == 0);
-        BOOST_TEST(boost::get_deleter<X const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<deleter>(p) == 0);
-        BOOST_TEST(boost::get_deleter<deleter const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<deleter2>(p) == 0);
-        BOOST_TEST(boost::get_deleter<deleter2 const>(p) == 0);
+        KIT_TEST(kit::get_deleter<void>(p) == 0);
+        KIT_TEST(kit::get_deleter<void const>(p) == 0);
+        KIT_TEST(kit::get_deleter<int>(p) == 0);
+        KIT_TEST(kit::get_deleter<int const>(p) == 0);
+        KIT_TEST(kit::get_deleter<X>(p) == 0);
+        KIT_TEST(kit::get_deleter<X const>(p) == 0);
+        KIT_TEST(kit::get_deleter<deleter>(p) == 0);
+        KIT_TEST(kit::get_deleter<deleter const>(p) == 0);
+        KIT_TEST(kit::get_deleter<deleter2>(p) == 0);
+        KIT_TEST(kit::get_deleter<deleter2 const>(p) == 0);
     }
 
     {
-        boost::shared_ptr<X> p(new X);
+        kit::local_shared_ptr<X> p(new X);
 
-        BOOST_TEST(boost::get_deleter<void>(p) == 0);
-        BOOST_TEST(boost::get_deleter<void const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<int>(p) == 0);
-        BOOST_TEST(boost::get_deleter<int const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<X>(p) == 0);
-        BOOST_TEST(boost::get_deleter<X const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<deleter>(p) == 0);
-        BOOST_TEST(boost::get_deleter<deleter const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<deleter2>(p) == 0);
-        BOOST_TEST(boost::get_deleter<deleter2 const>(p) == 0);
+        KIT_TEST(kit::get_deleter<void>(p) == 0);
+        KIT_TEST(kit::get_deleter<void const>(p) == 0);
+        KIT_TEST(kit::get_deleter<int>(p) == 0);
+        KIT_TEST(kit::get_deleter<int const>(p) == 0);
+        KIT_TEST(kit::get_deleter<X>(p) == 0);
+        KIT_TEST(kit::get_deleter<X const>(p) == 0);
+        KIT_TEST(kit::get_deleter<deleter>(p) == 0);
+        KIT_TEST(kit::get_deleter<deleter const>(p) == 0);
+        KIT_TEST(kit::get_deleter<deleter2>(p) == 0);
+        KIT_TEST(kit::get_deleter<deleter2 const>(p) == 0);
     }
 
     {
         X x;
-        boost::shared_ptr<X> p(&x, deleter());
+        kit::local_shared_ptr<X> p(&x, deleter());
 
-        BOOST_TEST(boost::get_deleter<void>(p) == 0);
-        BOOST_TEST(boost::get_deleter<void const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<int>(p) == 0);
-        BOOST_TEST(boost::get_deleter<int const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<X>(p) == 0);
-        BOOST_TEST(boost::get_deleter<X const>(p) == 0);
-        BOOST_TEST(boost::get_deleter<deleter2>(p) == 0);
-        BOOST_TEST(boost::get_deleter<deleter2 const>(p) == 0);
+        KIT_TEST(kit::get_deleter<void>(p) == 0);
+        KIT_TEST(kit::get_deleter<void const>(p) == 0);
+        KIT_TEST(kit::get_deleter<int>(p) == 0);
+        KIT_TEST(kit::get_deleter<int const>(p) == 0);
+        KIT_TEST(kit::get_deleter<X>(p) == 0);
+        KIT_TEST(kit::get_deleter<X const>(p) == 0);
+        KIT_TEST(kit::get_deleter<deleter2>(p) == 0);
+        KIT_TEST(kit::get_deleter<deleter2 const>(p) == 0);
 
-        deleter * q = boost::get_deleter<deleter>(p);
+        deleter * q = kit::get_deleter<deleter>(p);
 
-        BOOST_TEST(q != 0);
-        BOOST_TEST(q->data == 0);
+        KIT_TEST(q != 0);
+        KIT_TEST(q->data == 0);
 
         q->data = 17041;
 
-        deleter const * r = boost::get_deleter<deleter const>(p);
+        deleter const * r = kit::get_deleter<deleter const>(p);
 
-        BOOST_TEST(r == q);
-        BOOST_TEST(r->data == 17041);
+        KIT_TEST(r == q);
+        KIT_TEST(r->data == 17041);
     }
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

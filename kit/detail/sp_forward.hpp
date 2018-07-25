@@ -1,5 +1,5 @@
-#ifndef BOOST_DETAIL_SP_FORWARD_HPP_INCLUDED
-#define BOOST_DETAIL_SP_FORWARD_HPP_INCLUDED
+#ifndef KIT_DETAIL_SP_FORWARD_HPP_INCLUDED
+#define KIT_DETAIL_SP_FORWARD_HPP_INCLUDED
 
 //  detail/sp_forward.hpp
 //
@@ -9,7 +9,7 @@
 //  See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt
 
-namespace boost {
+namespace kit {
 
   namespace detail {
 
@@ -20,6 +20,6 @@ namespace boost {
 
   } // namespace detail
 
-} // namespace boost
+} // namespace kit
 
-#endif // #ifndef BOOST_DETAIL_SP_FORWARD_HPP_INCLUDED
+#endif // #ifndef KIT_DETAIL_SP_FORWARD_HPP_INCLUDED

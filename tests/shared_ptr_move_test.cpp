@@ -1,5 +1,5 @@
 //
-//  shared_ptr_move_test.cpp
+//  local_shared_ptr_move_test.cpp
 //
 //  Copyright (c) 2007 Peter Dimov
 //
@@ -8,11 +8,11 @@
 // http://www.boost.org/LICENSE_1_0.txt
 //
 
-#include <boost/shared_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include "lightweight_test.hpp"
 #include <utility>
 
-namespace shared_ptr_move_test {
+namespace local_shared_ptr_move_test {
 
 struct X
 {
@@ -38,63 +38,63 @@ long X::instances = 0;
 
 int main()
 {
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr<X> p( new X );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr<X> p( new X );
+        KIT_TEST( X::instances == 1 );
 
-        boost::shared_ptr<X> p2( std::move( p ) );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p.get() == 0 );
+        kit::local_shared_ptr<X> p2( std::move( p ) );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p.get() == 0 );
 
-        boost::shared_ptr<void> p3( std::move( p2 ) );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p2.get() == 0 );
+        kit::local_shared_ptr<void> p3( std::move( p2 ) );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p2.get() == 0 );
 
         p3.reset();
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr<X> p( new X );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr<X> p( new X );
+        KIT_TEST( X::instances == 1 );
 
-        boost::shared_ptr<X> p2;
+        kit::local_shared_ptr<X> p2;
         p2 = std::move( p );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p.get() == 0 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p.get() == 0 );
 
-        boost::shared_ptr<void> p3;
+        kit::local_shared_ptr<void> p3;
         p3 = std::move( p2 );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p2.get() == 0 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p2.get() == 0 );
 
         p3.reset();
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr<X> p( new X );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr<X> p( new X );
+        KIT_TEST( X::instances == 1 );
 
-        boost::shared_ptr<X> p2( new X );
-        BOOST_TEST( X::instances == 2 );
+        kit::local_shared_ptr<X> p2( new X );
+        KIT_TEST( X::instances == 2 );
         p2 = std::move( p );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p.get() == 0 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p.get() == 0 );
 
-        boost::shared_ptr<void> p3( new X );
-        BOOST_TEST( X::instances == 2 );
+        kit::local_shared_ptr<void> p3( new X );
+        KIT_TEST( X::instances == 2 );
         p3 = std::move( p2 );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p2.get() == 0 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p2.get() == 0 );
 
         p3.reset();
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

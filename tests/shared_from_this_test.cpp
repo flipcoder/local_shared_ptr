@@ -9,8 +9,8 @@
 //
 
 
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
+#include <kit/enable_shared_from_this.hpp>
+#include <kit/local_shared_ptr.hpp>
 
 #include "lightweight_test.hpp"
 
@@ -33,39 +33,39 @@ class Y
 {
 public:
 
-    virtual boost::shared_ptr<X> getX() = 0;
+    virtual kit::local_shared_ptr<X> getX() = 0;
 
 protected:
 
     ~Y() {}
 };
 
-boost::shared_ptr<Y> createY();
+kit::local_shared_ptr<Y> createY();
 
 void test()
 {
-    boost::shared_ptr<Y> py = createY();
-    BOOST_TEST(py.get() != 0);
-    BOOST_TEST(py.use_count() == 1);
+    kit::local_shared_ptr<Y> py = createY();
+    KIT_TEST(py.get() != 0);
+    KIT_TEST(py.use_count() == 1);
 
     try
     {
-        boost::shared_ptr<X> px = py->getX();
-        BOOST_TEST(px.get() != 0);
-        BOOST_TEST(py.use_count() == 2);
+        kit::local_shared_ptr<X> px = py->getX();
+        KIT_TEST(px.get() != 0);
+        KIT_TEST(py.use_count() == 2);
 
         px->f();
 
-#if !defined( BOOST_NO_RTTI )
-        boost::shared_ptr<Y> py2 = boost::dynamic_pointer_cast<Y>(px);
-        BOOST_TEST(py.get() == py2.get());
-        BOOST_TEST(!(py < py2 || py2 < py));
-        BOOST_TEST(py.use_count() == 3);
+#if !defined( KIT_NO_RTTI )
+        kit::local_shared_ptr<Y> py2 = kit::dynamic_pointer_cast<Y>(px);
+        KIT_TEST(py.get() == py2.get());
+        KIT_TEST(!(py < py2 || py2 < py));
+        KIT_TEST(py.use_count() == 3);
 #endif
     }
-    catch( boost::bad_weak_ptr const& )
+    catch( kit::bad_local_weak_ptr const& )
     {
-        BOOST_ERROR( "py->getX() failed" );
+        KIT_ERROR( "py->getX() failed" );
     }
 }
 
@@ -77,13 +77,13 @@ int main()
     test();
     test2();
     test3();
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 // virtual inheritance to stress the implementation
 // (prevents Y* -> impl*, enable_shared_from_this<impl>* -> impl* casts)
 
-class impl: public X, public virtual Y, public virtual boost::enable_shared_from_this<impl>
+class impl: public X, public virtual Y, public virtual kit::enable_shared_from_this<impl>
 {
 public:
 
@@ -91,10 +91,10 @@ public:
     {
     }
 
-    virtual boost::shared_ptr<X> getX()
+    virtual kit::local_shared_ptr<X> getX()
     {
-        boost::shared_ptr<impl> pi = shared_from_this();
-        BOOST_TEST(pi.get() == this);
+        kit::local_shared_ptr<impl> pi = shared_from_this();
+        KIT_TEST(pi.get() == this);
         return pi;
     }
 };
@@ -105,59 +105,59 @@ class impl2: public impl
 {
 };
 
-boost::shared_ptr<Y> createY()
+kit::local_shared_ptr<Y> createY()
 {
-    boost::shared_ptr<Y> pi(new impl2);
+    kit::local_shared_ptr<Y> pi(new impl2);
     return pi;
 }
 
 void test2()
 {
-    boost::shared_ptr<Y> pi(static_cast<impl2*>(0));
+    kit::local_shared_ptr<Y> pi(static_cast<impl2*>(0));
 }
 
 //
 
-struct V: public boost::enable_shared_from_this<V>
+struct V: public kit::enable_shared_from_this<V>
 {
 };
 
 void test3()
 {
-    boost::shared_ptr<V> p(new V);
+    kit::local_shared_ptr<V> p(new V);
 
     try
     {
-        boost::shared_ptr<V> q = p->shared_from_this();
-        BOOST_TEST(p == q);
-        BOOST_TEST(!(p < q) && !(q < p));
+        kit::local_shared_ptr<V> q = p->shared_from_this();
+        KIT_TEST(p == q);
+        KIT_TEST(!(p < q) && !(q < p));
     }
-    catch( boost::bad_weak_ptr const & )
+    catch( kit::bad_local_weak_ptr const & )
     {
-        BOOST_ERROR( "p->shared_from_this() failed" );
+        KIT_ERROR( "p->shared_from_this() failed" );
     }
 
     V v2(*p);
 
     try
     {
-        boost::shared_ptr<V> r = v2.shared_from_this();
-        BOOST_ERROR("v2.shared_from_this() failed to throw");
+        kit::local_shared_ptr<V> r = v2.shared_from_this();
+        KIT_ERROR("v2.shared_from_this() failed to throw");
     }
-    catch( boost::bad_weak_ptr const & )
+    catch( kit::bad_local_weak_ptr const & )
     {
     }
 
     try
     {
         *p = V();
-        boost::shared_ptr<V> r = p->shared_from_this();
-        BOOST_TEST(p == r);
-        BOOST_TEST(!(p < r) && !(r < p));
+        kit::local_shared_ptr<V> r = p->shared_from_this();
+        KIT_TEST(p == r);
+        KIT_TEST(!(p < r) && !(r < p));
     }
-    catch( boost::bad_weak_ptr const & )
+    catch( kit::bad_local_weak_ptr const & )
     {
-        BOOST_ERROR("p->shared_from_this() threw bad_weak_ptr after *p = V()");
+        KIT_ERROR("p->shared_from_this() threw bad_local_weak_ptr after *p = V()");
     }
 }
 

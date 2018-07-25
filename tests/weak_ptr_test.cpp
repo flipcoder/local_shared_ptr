@@ -9,8 +9,8 @@
 //
 
 #include "lightweight_test.hpp"
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
+#include <kit/local_weak_ptr.hpp>
 #include "tests.hpp"
 #include <map>
 #include <vector>
@@ -29,7 +29,7 @@ void f(int &)
 
 void test()
 {
-    typedef boost::weak_ptr<int>::element_type T;
+    typedef kit::local_weak_ptr<int>::element_type T;
     T t;
     f(t);
 }
@@ -38,7 +38,7 @@ void test()
 
 class incomplete;
 
-boost::shared_ptr<incomplete> create_incomplete();
+kit::local_shared_ptr<incomplete> create_incomplete();
 
 struct X
 {
@@ -60,423 +60,423 @@ namespace n_constructors
 void default_constructor()
 {
     {
-        boost::weak_ptr<int> wp;
-        BOOST_TEST(wp.use_count() == 0);
+        kit::local_weak_ptr<int> wp;
+        KIT_TEST(wp.use_count() == 0);
     }
 
     {
-        boost::weak_ptr<void> wp;
-        BOOST_TEST(wp.use_count() == 0);
+        kit::local_weak_ptr<void> wp;
+        KIT_TEST(wp.use_count() == 0);
     }
 
     {
-        boost::weak_ptr<incomplete> wp;
-        BOOST_TEST(wp.use_count() == 0);
+        kit::local_weak_ptr<incomplete> wp;
+        KIT_TEST(wp.use_count() == 0);
     }
 }
 
-void shared_ptr_constructor()
+void local_shared_ptr_constructor()
 {
     {
-        boost::shared_ptr<int> sp;
+        kit::local_shared_ptr<int> sp;
 
-        boost::weak_ptr<int> wp(sp);
-        BOOST_TEST(wp.use_count() == sp.use_count());
+        kit::local_weak_ptr<int> wp(sp);
+        KIT_TEST(wp.use_count() == sp.use_count());
 
-        boost::weak_ptr<void> wp2(sp);
-        BOOST_TEST(wp2.use_count() == sp.use_count());
+        kit::local_weak_ptr<void> wp2(sp);
+        KIT_TEST(wp2.use_count() == sp.use_count());
     }
 
     {
-        boost::shared_ptr<int> sp(static_cast<int*>(0));
+        kit::local_shared_ptr<int> sp(static_cast<int*>(0));
 
         {
-            boost::weak_ptr<int> wp(sp);
-            BOOST_TEST(wp.use_count() == sp.use_count());
-            BOOST_TEST(wp.use_count() == 1);
-            boost::shared_ptr<int> sp2(wp);
-            BOOST_TEST(wp.use_count() == 2);
-            BOOST_TEST(!(sp < sp2 || sp2 < sp));
+            kit::local_weak_ptr<int> wp(sp);
+            KIT_TEST(wp.use_count() == sp.use_count());
+            KIT_TEST(wp.use_count() == 1);
+            kit::local_shared_ptr<int> sp2(wp);
+            KIT_TEST(wp.use_count() == 2);
+            KIT_TEST(!(sp < sp2 || sp2 < sp));
         }
 
         {
-            boost::weak_ptr<void> wp(sp);
-            BOOST_TEST(wp.use_count() == sp.use_count());
-            BOOST_TEST(wp.use_count() == 1);
-            boost::shared_ptr<void> sp2(wp);
-            BOOST_TEST(wp.use_count() == 2);
-            BOOST_TEST(!(sp < sp2 || sp2 < sp));
-        }
-    }
-
-    {
-        boost::shared_ptr<int> sp(new int);
-
-        {
-            boost::weak_ptr<int> wp(sp);
-            BOOST_TEST(wp.use_count() == sp.use_count());
-            BOOST_TEST(wp.use_count() == 1);
-            boost::shared_ptr<int> sp2(wp);
-            BOOST_TEST(wp.use_count() == 2);
-            BOOST_TEST(!(sp < sp2 || sp2 < sp));
-        }
-
-        {
-            boost::weak_ptr<void> wp(sp);
-            BOOST_TEST(wp.use_count() == sp.use_count());
-            BOOST_TEST(wp.use_count() == 1);
-            boost::shared_ptr<void> sp2(wp);
-            BOOST_TEST(wp.use_count() == 2);
-            BOOST_TEST(!(sp < sp2 || sp2 < sp));
+            kit::local_weak_ptr<void> wp(sp);
+            KIT_TEST(wp.use_count() == sp.use_count());
+            KIT_TEST(wp.use_count() == 1);
+            kit::local_shared_ptr<void> sp2(wp);
+            KIT_TEST(wp.use_count() == 2);
+            KIT_TEST(!(sp < sp2 || sp2 < sp));
         }
     }
 
     {
-        boost::shared_ptr<void> sp;
-
-        boost::weak_ptr<void> wp(sp);
-        BOOST_TEST(wp.use_count() == sp.use_count());
-    }
-
-    {
-        boost::shared_ptr<void> sp(static_cast<int*>(0));
-
-        boost::weak_ptr<void> wp(sp);
-        BOOST_TEST(wp.use_count() == sp.use_count());
-        BOOST_TEST(wp.use_count() == 1);
-        boost::shared_ptr<void> sp2(wp);
-        BOOST_TEST(wp.use_count() == 2);
-        BOOST_TEST(!(sp < sp2 || sp2 < sp));
-    }
-
-    {
-        boost::shared_ptr<void> sp(new int);
-
-        boost::weak_ptr<void> wp(sp);
-        BOOST_TEST(wp.use_count() == sp.use_count());
-        BOOST_TEST(wp.use_count() == 1);
-        boost::shared_ptr<void> sp2(wp);
-        BOOST_TEST(wp.use_count() == 2);
-        BOOST_TEST(!(sp < sp2 || sp2 < sp));
-    }
-
-    {
-        boost::shared_ptr<incomplete> sp;
-
-        boost::weak_ptr<incomplete> wp(sp);
-        BOOST_TEST(wp.use_count() == sp.use_count());
-
-        boost::weak_ptr<void> wp2(sp);
-        BOOST_TEST(wp2.use_count() == sp.use_count());
-    }
-
-    {
-        boost::shared_ptr<incomplete> sp = create_incomplete();
+        kit::local_shared_ptr<int> sp(new int);
 
         {
-            boost::weak_ptr<incomplete> wp(sp);
-            BOOST_TEST(wp.use_count() == sp.use_count());
-            BOOST_TEST(wp.use_count() == 1);
-            boost::shared_ptr<incomplete> sp2(wp);
-            BOOST_TEST(wp.use_count() == 2);
-            BOOST_TEST(!(sp < sp2 || sp2 < sp));
+            kit::local_weak_ptr<int> wp(sp);
+            KIT_TEST(wp.use_count() == sp.use_count());
+            KIT_TEST(wp.use_count() == 1);
+            kit::local_shared_ptr<int> sp2(wp);
+            KIT_TEST(wp.use_count() == 2);
+            KIT_TEST(!(sp < sp2 || sp2 < sp));
         }
 
         {
-            boost::weak_ptr<void> wp(sp);
-            BOOST_TEST(wp.use_count() == sp.use_count());
-            BOOST_TEST(wp.use_count() == 1);
-            boost::shared_ptr<void> sp2(wp);
-            BOOST_TEST(wp.use_count() == 2);
-            BOOST_TEST(!(sp < sp2 || sp2 < sp));
+            kit::local_weak_ptr<void> wp(sp);
+            KIT_TEST(wp.use_count() == sp.use_count());
+            KIT_TEST(wp.use_count() == 1);
+            kit::local_shared_ptr<void> sp2(wp);
+            KIT_TEST(wp.use_count() == 2);
+            KIT_TEST(!(sp < sp2 || sp2 < sp));
         }
     }
 
     {
-        boost::shared_ptr<void> sp = create_incomplete();
+        kit::local_shared_ptr<void> sp;
 
-        boost::weak_ptr<void> wp(sp);
-        BOOST_TEST(wp.use_count() == sp.use_count());
-        BOOST_TEST(wp.use_count() == 1);
-        boost::shared_ptr<void> sp2(wp);
-        BOOST_TEST(wp.use_count() == 2);
-        BOOST_TEST(!(sp < sp2 || sp2 < sp));
+        kit::local_weak_ptr<void> wp(sp);
+        KIT_TEST(wp.use_count() == sp.use_count());
+    }
+
+    {
+        kit::local_shared_ptr<void> sp(static_cast<int*>(0));
+
+        kit::local_weak_ptr<void> wp(sp);
+        KIT_TEST(wp.use_count() == sp.use_count());
+        KIT_TEST(wp.use_count() == 1);
+        kit::local_shared_ptr<void> sp2(wp);
+        KIT_TEST(wp.use_count() == 2);
+        KIT_TEST(!(sp < sp2 || sp2 < sp));
+    }
+
+    {
+        kit::local_shared_ptr<void> sp(new int);
+
+        kit::local_weak_ptr<void> wp(sp);
+        KIT_TEST(wp.use_count() == sp.use_count());
+        KIT_TEST(wp.use_count() == 1);
+        kit::local_shared_ptr<void> sp2(wp);
+        KIT_TEST(wp.use_count() == 2);
+        KIT_TEST(!(sp < sp2 || sp2 < sp));
+    }
+
+    {
+        kit::local_shared_ptr<incomplete> sp;
+
+        kit::local_weak_ptr<incomplete> wp(sp);
+        KIT_TEST(wp.use_count() == sp.use_count());
+
+        kit::local_weak_ptr<void> wp2(sp);
+        KIT_TEST(wp2.use_count() == sp.use_count());
+    }
+
+    {
+        kit::local_shared_ptr<incomplete> sp = create_incomplete();
+
+        {
+            kit::local_weak_ptr<incomplete> wp(sp);
+            KIT_TEST(wp.use_count() == sp.use_count());
+            KIT_TEST(wp.use_count() == 1);
+            kit::local_shared_ptr<incomplete> sp2(wp);
+            KIT_TEST(wp.use_count() == 2);
+            KIT_TEST(!(sp < sp2 || sp2 < sp));
+        }
+
+        {
+            kit::local_weak_ptr<void> wp(sp);
+            KIT_TEST(wp.use_count() == sp.use_count());
+            KIT_TEST(wp.use_count() == 1);
+            kit::local_shared_ptr<void> sp2(wp);
+            KIT_TEST(wp.use_count() == 2);
+            KIT_TEST(!(sp < sp2 || sp2 < sp));
+        }
+    }
+
+    {
+        kit::local_shared_ptr<void> sp = create_incomplete();
+
+        kit::local_weak_ptr<void> wp(sp);
+        KIT_TEST(wp.use_count() == sp.use_count());
+        KIT_TEST(wp.use_count() == 1);
+        kit::local_shared_ptr<void> sp2(wp);
+        KIT_TEST(wp.use_count() == 2);
+        KIT_TEST(!(sp < sp2 || sp2 < sp));
     }
 }
 
 void copy_constructor()
 {
     {
-        boost::weak_ptr<int> wp;
-        boost::weak_ptr<int> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 0);
+        kit::local_weak_ptr<int> wp;
+        kit::local_weak_ptr<int> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 0);
     }
 
     {
-        boost::weak_ptr<void> wp;
-        boost::weak_ptr<void> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 0);
+        kit::local_weak_ptr<void> wp;
+        kit::local_weak_ptr<void> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 0);
     }
 
     {
-        boost::weak_ptr<incomplete> wp;
-        boost::weak_ptr<incomplete> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 0);
+        kit::local_weak_ptr<incomplete> wp;
+        kit::local_weak_ptr<incomplete> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 0);
     }
 
     {
-        boost::shared_ptr<int> sp(static_cast<int*>(0));
-        boost::weak_ptr<int> wp(sp);
+        kit::local_shared_ptr<int> sp(static_cast<int*>(0));
+        kit::local_weak_ptr<int> wp(sp);
 
-        boost::weak_ptr<int> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<int> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<int> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<int> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 
     {
-        boost::shared_ptr<int> sp(new int);
-        boost::weak_ptr<int> wp(sp);
+        kit::local_shared_ptr<int> sp(new int);
+        kit::local_weak_ptr<int> wp(sp);
 
-        boost::weak_ptr<int> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<int> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<int> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<int> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 
     {
-        boost::shared_ptr<void> sp(static_cast<int*>(0));
-        boost::weak_ptr<void> wp(sp);
+        kit::local_shared_ptr<void> sp(static_cast<int*>(0));
+        kit::local_weak_ptr<void> wp(sp);
 
-        boost::weak_ptr<void> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<void> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<void> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<void> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 
     {
-        boost::shared_ptr<void> sp(new int);
-        boost::weak_ptr<void> wp(sp);
+        kit::local_shared_ptr<void> sp(new int);
+        kit::local_weak_ptr<void> wp(sp);
 
-        boost::weak_ptr<void> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<void> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<void> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<void> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 
     {
-        boost::shared_ptr<incomplete> sp = create_incomplete();
-        boost::weak_ptr<incomplete> wp(sp);
+        kit::local_shared_ptr<incomplete> sp = create_incomplete();
+        kit::local_weak_ptr<incomplete> wp(sp);
 
-        boost::weak_ptr<incomplete> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<incomplete> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<incomplete> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<incomplete> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 }
 
 void conversion_constructor()
 {
     {
-        boost::weak_ptr<int> wp;
-        boost::weak_ptr<void> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 0);
+        kit::local_weak_ptr<int> wp;
+        kit::local_weak_ptr<void> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 0);
     }
 
     {
-        boost::weak_ptr<incomplete> wp;
-        boost::weak_ptr<void> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 0);
+        kit::local_weak_ptr<incomplete> wp;
+        kit::local_weak_ptr<void> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 0);
     }
 
     {
-        boost::weak_ptr<Z> wp;
+        kit::local_weak_ptr<Z> wp;
 
-        boost::weak_ptr<X> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 0);
+        kit::local_weak_ptr<X> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 0);
 
-        boost::weak_ptr<Y> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
+        kit::local_weak_ptr<Y> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
     }
 
     {
-        boost::shared_ptr<int> sp(static_cast<int*>(0));
-        boost::weak_ptr<int> wp(sp);
+        kit::local_shared_ptr<int> sp(static_cast<int*>(0));
+        kit::local_weak_ptr<int> wp(sp);
 
-        boost::weak_ptr<void> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<void> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<void> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<void> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 
     {
-        boost::shared_ptr<int> sp(new int);
-        boost::weak_ptr<int> wp(sp);
+        kit::local_shared_ptr<int> sp(new int);
+        kit::local_weak_ptr<int> wp(sp);
 
-        boost::weak_ptr<void> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<void> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<void> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<void> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 
     {
-        boost::shared_ptr<incomplete> sp = create_incomplete();
-        boost::weak_ptr<incomplete> wp(sp);
+        kit::local_shared_ptr<incomplete> sp = create_incomplete();
+        kit::local_weak_ptr<incomplete> wp(sp);
 
-        boost::weak_ptr<void> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<void> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<void> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<void> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 
     {
-        boost::shared_ptr<Z> sp(static_cast<Z*>(0));
-        boost::weak_ptr<Z> wp(sp);
+        kit::local_shared_ptr<Z> sp(static_cast<Z*>(0));
+        kit::local_weak_ptr<Z> wp(sp);
 
-        boost::weak_ptr<X> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<X> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<X> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<X> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 
     {
-        boost::shared_ptr<Z> sp(static_cast<Z*>(0));
-        boost::weak_ptr<Z> wp(sp);
+        kit::local_shared_ptr<Z> sp(static_cast<Z*>(0));
+        kit::local_weak_ptr<Z> wp(sp);
 
-        boost::weak_ptr<Y> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<Y> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<Y> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<Y> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 
     {
-        boost::shared_ptr<Z> sp(new Z);
-        boost::weak_ptr<Z> wp(sp);
+        kit::local_shared_ptr<Z> sp(new Z);
+        kit::local_weak_ptr<Z> wp(sp);
 
-        boost::weak_ptr<X> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<X> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<X> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<X> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 
     {
-        boost::shared_ptr<Z> sp(new Z);
-        boost::weak_ptr<Z> wp(sp);
+        kit::local_shared_ptr<Z> sp(new Z);
+        kit::local_weak_ptr<Z> wp(sp);
 
-        boost::weak_ptr<Y> wp2(wp);
-        BOOST_TEST(wp2.use_count() == wp.use_count());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        kit::local_weak_ptr<Y> wp2(wp);
+        KIT_TEST(wp2.use_count() == wp.use_count());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
         sp.reset();
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
 
-        boost::weak_ptr<Y> wp3(wp);
-        BOOST_TEST(wp3.use_count() == wp.use_count());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        kit::local_weak_ptr<Y> wp3(wp);
+        KIT_TEST(wp3.use_count() == wp.use_count());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
     }
 }
 
 void test()
 {
     default_constructor();
-    shared_ptr_constructor();
+    local_shared_ptr_constructor();
     copy_constructor();
     conversion_constructor();
 }
@@ -486,144 +486,144 @@ void test()
 namespace n_assignment
 {
 
-template<class T> void copy_assignment(boost::shared_ptr<T> & sp)
+template<class T> void copy_assignment(kit::local_shared_ptr<T> & sp)
 {
-    BOOST_TEST(sp.unique());
+    KIT_TEST(sp.unique());
 
-    boost::weak_ptr<T> p1;
+    kit::local_weak_ptr<T> p1;
 
     p1 = p1;
-    BOOST_TEST(p1.use_count() == 0);
+    KIT_TEST(p1.use_count() == 0);
 
-    boost::weak_ptr<T> p2;
+    kit::local_weak_ptr<T> p2;
 
     p1 = p2;
-    BOOST_TEST(p1.use_count() == 0);
+    KIT_TEST(p1.use_count() == 0);
 
-    boost::weak_ptr<T> p3(p1);
+    kit::local_weak_ptr<T> p3(p1);
 
     p1 = p3;
-    BOOST_TEST(p1.use_count() == 0);
+    KIT_TEST(p1.use_count() == 0);
 
-    boost::weak_ptr<T> p4(sp);
+    kit::local_weak_ptr<T> p4(sp);
 
     p4 = p4;
-    BOOST_TEST(p4.use_count() == 1);
+    KIT_TEST(p4.use_count() == 1);
 
     p1 = p4;
-    BOOST_TEST(p1.use_count() == 1);
+    KIT_TEST(p1.use_count() == 1);
 
     p4 = p2;
-    BOOST_TEST(p4.use_count() == 0);
+    KIT_TEST(p4.use_count() == 0);
 
     sp.reset();
 
     p1 = p1;
-    BOOST_TEST(p1.use_count() == 0);
+    KIT_TEST(p1.use_count() == 0);
 
     p4 = p1;
-    BOOST_TEST(p4.use_count() == 0);
+    KIT_TEST(p4.use_count() == 0);
 }
 
 void conversion_assignment()
 {
     {
-        boost::weak_ptr<void> p1;
+        kit::local_weak_ptr<void> p1;
 
-        boost::weak_ptr<incomplete> p2;
+        kit::local_weak_ptr<incomplete> p2;
 
         p1 = p2;
-        BOOST_TEST(p1.use_count() == 0);
+        KIT_TEST(p1.use_count() == 0);
 
-        boost::shared_ptr<incomplete> sp = create_incomplete();
-        boost::weak_ptr<incomplete> p3(sp);
+        kit::local_shared_ptr<incomplete> sp = create_incomplete();
+        kit::local_weak_ptr<incomplete> p3(sp);
 
         p1 = p3;
-        BOOST_TEST(p1.use_count() == 1);
+        KIT_TEST(p1.use_count() == 1);
 
         sp.reset();
 
         p1 = p3;
-        BOOST_TEST(p1.use_count() == 0);
+        KIT_TEST(p1.use_count() == 0);
 
         p1 = p2;
-        BOOST_TEST(p1.use_count() == 0);
+        KIT_TEST(p1.use_count() == 0);
     }
 
     {
-        boost::weak_ptr<X> p1;
+        kit::local_weak_ptr<X> p1;
 
-        boost::weak_ptr<Z> p2;
+        kit::local_weak_ptr<Z> p2;
 
         p1 = p2;
-        BOOST_TEST(p1.use_count() == 0);
+        KIT_TEST(p1.use_count() == 0);
 
-        boost::shared_ptr<Z> sp(new Z);
-        boost::weak_ptr<Z> p3(sp);
+        kit::local_shared_ptr<Z> sp(new Z);
+        kit::local_weak_ptr<Z> p3(sp);
 
         p1 = p3;
-        BOOST_TEST(p1.use_count() == 1);
+        KIT_TEST(p1.use_count() == 1);
 
         sp.reset();
 
         p1 = p3;
-        BOOST_TEST(p1.use_count() == 0);
+        KIT_TEST(p1.use_count() == 0);
 
         p1 = p2;
-        BOOST_TEST(p1.use_count() == 0);
+        KIT_TEST(p1.use_count() == 0);
     }
 
     {
-        boost::weak_ptr<Y> p1;
+        kit::local_weak_ptr<Y> p1;
 
-        boost::weak_ptr<Z> p2;
+        kit::local_weak_ptr<Z> p2;
 
         p1 = p2;
-        BOOST_TEST(p1.use_count() == 0);
+        KIT_TEST(p1.use_count() == 0);
 
-        boost::shared_ptr<Z> sp(new Z);
-        boost::weak_ptr<Z> p3(sp);
+        kit::local_shared_ptr<Z> sp(new Z);
+        kit::local_weak_ptr<Z> p3(sp);
 
         p1 = p3;
-        BOOST_TEST(p1.use_count() == 1);
+        KIT_TEST(p1.use_count() == 1);
 
         sp.reset();
 
         p1 = p3;
-        BOOST_TEST(p1.use_count() == 0);
+        KIT_TEST(p1.use_count() == 0);
 
         p1 = p2;
-        BOOST_TEST(p1.use_count() == 0);
+        KIT_TEST(p1.use_count() == 0);
     }
 }
 
-template<class T, class U> void shared_ptr_assignment(boost::shared_ptr<U> & sp, T * = 0)
+template<class T, class U> void local_shared_ptr_assignment(kit::local_shared_ptr<U> & sp, T * = 0)
 {
-    BOOST_TEST(sp.unique());
+    KIT_TEST(sp.unique());
 
-    boost::weak_ptr<T> p1;
-    boost::weak_ptr<T> p2(p1);
-    boost::weak_ptr<T> p3(sp);
-    boost::weak_ptr<T> p4(p3);
+    kit::local_weak_ptr<T> p1;
+    kit::local_weak_ptr<T> p2(p1);
+    kit::local_weak_ptr<T> p3(sp);
+    kit::local_weak_ptr<T> p4(p3);
 
     p1 = sp;
-    BOOST_TEST(p1.use_count() == 1);
+    KIT_TEST(p1.use_count() == 1);
 
     p2 = sp;
-    BOOST_TEST(p2.use_count() == 1);
+    KIT_TEST(p2.use_count() == 1);
 
     p3 = sp;
-    BOOST_TEST(p3.use_count() == 1);
+    KIT_TEST(p3.use_count() == 1);
 
     p4 = sp;
-    BOOST_TEST(p4.use_count() == 1);
+    KIT_TEST(p4.use_count() == 1);
 
     sp.reset();
 
-    BOOST_TEST(p1.use_count() == 0);
-    BOOST_TEST(p2.use_count() == 0);
-    BOOST_TEST(p3.use_count() == 0);
-    BOOST_TEST(p4.use_count() == 0);
+    KIT_TEST(p1.use_count() == 0);
+    KIT_TEST(p2.use_count() == 0);
+    KIT_TEST(p3.use_count() == 0);
+    KIT_TEST(p4.use_count() == 0);
 
     p1 = sp;
 }
@@ -631,60 +631,60 @@ template<class T, class U> void shared_ptr_assignment(boost::shared_ptr<U> & sp,
 void test()
 {
     {
-        boost::shared_ptr<int> p( new int );
+        kit::local_shared_ptr<int> p( new int );
         copy_assignment( p );
     }
 
     {
-        boost::shared_ptr<X> p( new X );
+        kit::local_shared_ptr<X> p( new X );
         copy_assignment( p );
     }
 
     {
-        boost::shared_ptr<void> p( new int );
+        kit::local_shared_ptr<void> p( new int );
         copy_assignment( p );
     }
 
     {
-        boost::shared_ptr<incomplete> p = create_incomplete();
+        kit::local_shared_ptr<incomplete> p = create_incomplete();
         copy_assignment( p );
     }
 
     conversion_assignment();
 
     {
-        boost::shared_ptr<int> p( new int );
-        shared_ptr_assignment<int>( p );
+        kit::local_shared_ptr<int> p( new int );
+        local_shared_ptr_assignment<int>( p );
     }
 
     {
-        boost::shared_ptr<int> p( new int );
-        shared_ptr_assignment<void>( p );
+        kit::local_shared_ptr<int> p( new int );
+        local_shared_ptr_assignment<void>( p );
     }
 
     {
-        boost::shared_ptr<X> p( new X );
-        shared_ptr_assignment<X>( p );
+        kit::local_shared_ptr<X> p( new X );
+        local_shared_ptr_assignment<X>( p );
     }
 
     {
-        boost::shared_ptr<X> p( new X );
-        shared_ptr_assignment<void>( p );
+        kit::local_shared_ptr<X> p( new X );
+        local_shared_ptr_assignment<void>( p );
     }
 
     {
-        boost::shared_ptr<void> p( new int );
-        shared_ptr_assignment<void>( p );
+        kit::local_shared_ptr<void> p( new int );
+        local_shared_ptr_assignment<void>( p );
     }
 
     {
-        boost::shared_ptr<incomplete> p = create_incomplete();
-        shared_ptr_assignment<incomplete>( p );
+        kit::local_shared_ptr<incomplete> p = create_incomplete();
+        local_shared_ptr_assignment<incomplete>( p );
     }
 
     {
-        boost::shared_ptr<incomplete> p = create_incomplete();
-        shared_ptr_assignment<void>( p );
+        kit::local_shared_ptr<incomplete> p = create_incomplete();
+        local_shared_ptr_assignment<void>( p );
     }
 }
 
@@ -693,72 +693,72 @@ void test()
 namespace n_reset
 {
 
-template<class T, class U> void test2( boost::shared_ptr<U> & sp, T * = 0 )
+template<class T, class U> void test2( kit::local_shared_ptr<U> & sp, T * = 0 )
 {
-    BOOST_TEST(sp.unique());
+    KIT_TEST(sp.unique());
 
-    boost::weak_ptr<T> p1;
-    boost::weak_ptr<T> p2(p1);
-    boost::weak_ptr<T> p3(sp);
-    boost::weak_ptr<T> p4(p3);
-    boost::weak_ptr<T> p5(sp);
-    boost::weak_ptr<T> p6(p5);
+    kit::local_weak_ptr<T> p1;
+    kit::local_weak_ptr<T> p2(p1);
+    kit::local_weak_ptr<T> p3(sp);
+    kit::local_weak_ptr<T> p4(p3);
+    kit::local_weak_ptr<T> p5(sp);
+    kit::local_weak_ptr<T> p6(p5);
 
     p1.reset();
-    BOOST_TEST(p1.use_count() == 0);
+    KIT_TEST(p1.use_count() == 0);
 
     p2.reset();
-    BOOST_TEST(p2.use_count() == 0);
+    KIT_TEST(p2.use_count() == 0);
 
     p3.reset();
-    BOOST_TEST(p3.use_count() == 0);
+    KIT_TEST(p3.use_count() == 0);
 
     p4.reset();
-    BOOST_TEST(p4.use_count() == 0);
+    KIT_TEST(p4.use_count() == 0);
 
     sp.reset();
 
     p5.reset();
-    BOOST_TEST(p5.use_count() == 0);
+    KIT_TEST(p5.use_count() == 0);
 
     p6.reset();
-    BOOST_TEST(p6.use_count() == 0);
+    KIT_TEST(p6.use_count() == 0);
 }
 
 void test()
 {
     {
-        boost::shared_ptr<int> p( new int );
+        kit::local_shared_ptr<int> p( new int );
         test2<int>( p );
     }
 
     {
-        boost::shared_ptr<int> p( new int );
+        kit::local_shared_ptr<int> p( new int );
         test2<void>( p );
     }
 
     {
-        boost::shared_ptr<X> p( new X );
+        kit::local_shared_ptr<X> p( new X );
         test2<X>( p );
     }
 
     {
-        boost::shared_ptr<X> p( new X );
+        kit::local_shared_ptr<X> p( new X );
         test2<void>( p );
     }
 
     {
-        boost::shared_ptr<void> p( new int );
+        kit::local_shared_ptr<void> p( new int );
         test2<void>( p );
     }
 
     {
-        boost::shared_ptr<incomplete> p = create_incomplete();
+        kit::local_shared_ptr<incomplete> p = create_incomplete();
         test2<incomplete>( p );
     }
 
     {
-        boost::shared_ptr<incomplete> p = create_incomplete();
+        kit::local_shared_ptr<incomplete> p = create_incomplete();
         test2<void>( p );
     }
 }
@@ -771,82 +771,82 @@ namespace n_use_count
 void test()
 {
     {
-        boost::weak_ptr<X> wp;
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp.expired());
+        kit::local_weak_ptr<X> wp;
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp.expired());
 
-        boost::weak_ptr<X> wp2;
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp.expired());
+        kit::local_weak_ptr<X> wp2;
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp.expired());
 
-        boost::weak_ptr<X> wp3(wp);
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp.expired());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(wp3.expired());
+        kit::local_weak_ptr<X> wp3(wp);
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp.expired());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(wp3.expired());
     }
 
     {
-        boost::shared_ptr<X> sp(static_cast<X*>(0));
+        kit::local_shared_ptr<X> sp(static_cast<X*>(0));
 
-        boost::weak_ptr<X> wp(sp);
-        BOOST_TEST(wp.use_count() == 1);
-        BOOST_TEST(!wp.expired());
+        kit::local_weak_ptr<X> wp(sp);
+        KIT_TEST(wp.use_count() == 1);
+        KIT_TEST(!wp.expired());
 
-        boost::weak_ptr<X> wp2(sp);
-        BOOST_TEST(wp.use_count() == 1);
-        BOOST_TEST(!wp.expired());
+        kit::local_weak_ptr<X> wp2(sp);
+        KIT_TEST(wp.use_count() == 1);
+        KIT_TEST(!wp.expired());
 
-        boost::weak_ptr<X> wp3(wp);
-        BOOST_TEST(wp.use_count() == 1);
-        BOOST_TEST(!wp.expired());
-        BOOST_TEST(wp3.use_count() == 1);
-        BOOST_TEST(!wp3.expired());
+        kit::local_weak_ptr<X> wp3(wp);
+        KIT_TEST(wp.use_count() == 1);
+        KIT_TEST(!wp.expired());
+        KIT_TEST(wp3.use_count() == 1);
+        KIT_TEST(!wp3.expired());
 
-        boost::shared_ptr<X> sp2(sp);
+        kit::local_shared_ptr<X> sp2(sp);
 
-        BOOST_TEST(wp.use_count() == 2);
-        BOOST_TEST(!wp.expired());
-        BOOST_TEST(wp2.use_count() == 2);
-        BOOST_TEST(!wp2.expired());
-        BOOST_TEST(wp3.use_count() == 2);
-        BOOST_TEST(!wp3.expired());
+        KIT_TEST(wp.use_count() == 2);
+        KIT_TEST(!wp.expired());
+        KIT_TEST(wp2.use_count() == 2);
+        KIT_TEST(!wp2.expired());
+        KIT_TEST(wp3.use_count() == 2);
+        KIT_TEST(!wp3.expired());
 
-        boost::shared_ptr<void> sp3(sp);
+        kit::local_shared_ptr<void> sp3(sp);
 
-        BOOST_TEST(wp.use_count() == 3);
-        BOOST_TEST(!wp.expired());
-        BOOST_TEST(wp2.use_count() == 3);
-        BOOST_TEST(!wp2.expired());
-        BOOST_TEST(wp3.use_count() == 3);
-        BOOST_TEST(!wp3.expired());
+        KIT_TEST(wp.use_count() == 3);
+        KIT_TEST(!wp.expired());
+        KIT_TEST(wp2.use_count() == 3);
+        KIT_TEST(!wp2.expired());
+        KIT_TEST(wp3.use_count() == 3);
+        KIT_TEST(!wp3.expired());
 
         sp.reset();
 
-        BOOST_TEST(wp.use_count() == 2);
-        BOOST_TEST(!wp.expired());
-        BOOST_TEST(wp2.use_count() == 2);
-        BOOST_TEST(!wp2.expired());
-        BOOST_TEST(wp3.use_count() == 2);
-        BOOST_TEST(!wp3.expired());
+        KIT_TEST(wp.use_count() == 2);
+        KIT_TEST(!wp.expired());
+        KIT_TEST(wp2.use_count() == 2);
+        KIT_TEST(!wp2.expired());
+        KIT_TEST(wp3.use_count() == 2);
+        KIT_TEST(!wp3.expired());
 
         sp2.reset();
 
-        BOOST_TEST(wp.use_count() == 1);
-        BOOST_TEST(!wp.expired());
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!wp2.expired());
-        BOOST_TEST(wp3.use_count() == 1);
-        BOOST_TEST(!wp3.expired());
+        KIT_TEST(wp.use_count() == 1);
+        KIT_TEST(!wp.expired());
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!wp2.expired());
+        KIT_TEST(wp3.use_count() == 1);
+        KIT_TEST(!wp3.expired());
 
         sp3.reset();
 
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp.expired());
-        BOOST_TEST(wp2.use_count() == 0);
-        BOOST_TEST(wp2.expired());
-        BOOST_TEST(wp3.use_count() == 0);
-        BOOST_TEST(wp3.expired());
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp.expired());
+        KIT_TEST(wp2.use_count() == 0);
+        KIT_TEST(wp2.expired());
+        KIT_TEST(wp3.use_count() == 0);
+        KIT_TEST(wp3.expired());
     }
 }
 
@@ -858,102 +858,102 @@ namespace n_swap
 void test()
 {
     {
-        boost::weak_ptr<X> wp;
-        boost::weak_ptr<X> wp2;
+        kit::local_weak_ptr<X> wp;
+        kit::local_weak_ptr<X> wp2;
 
         wp.swap(wp2);
 
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp2.use_count() == 0);
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp2.use_count() == 0);
 
         using std::swap;
         swap(wp, wp2);
 
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp2.use_count() == 0);
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp2.use_count() == 0);
     }
 
     {
-        boost::shared_ptr<X> sp(new X);
-        boost::weak_ptr<X> wp;
-        boost::weak_ptr<X> wp2(sp);
-        boost::weak_ptr<X> wp3(sp);
+        kit::local_shared_ptr<X> sp(new X);
+        kit::local_weak_ptr<X> wp;
+        kit::local_weak_ptr<X> wp2(sp);
+        kit::local_weak_ptr<X> wp3(sp);
 
         wp.swap(wp2);
 
-        BOOST_TEST(wp.use_count() == 1);
-        BOOST_TEST(wp2.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        KIT_TEST(wp.use_count() == 1);
+        KIT_TEST(wp2.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
 
         using std::swap;
         swap(wp, wp2);
 
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp2 < wp3 || wp3 < wp2));
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp2 < wp3 || wp3 < wp2));
 
         sp.reset();
 
         wp.swap(wp2);
 
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp2.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp2.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
 
         swap(wp, wp2);
 
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp2.use_count() == 0);
-        BOOST_TEST(!(wp2 < wp3 || wp3 < wp2));
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp2.use_count() == 0);
+        KIT_TEST(!(wp2 < wp3 || wp3 < wp2));
     }
 
     {
-        boost::shared_ptr<X> sp(new X);
-        boost::shared_ptr<X> sp2(new X);
-        boost::weak_ptr<X> wp(sp);
-        boost::weak_ptr<X> wp2(sp2);
-        boost::weak_ptr<X> wp3(sp2);
+        kit::local_shared_ptr<X> sp(new X);
+        kit::local_shared_ptr<X> sp2(new X);
+        kit::local_weak_ptr<X> wp(sp);
+        kit::local_weak_ptr<X> wp2(sp2);
+        kit::local_weak_ptr<X> wp3(sp2);
 
         wp.swap(wp2);
 
-        BOOST_TEST(wp.use_count() == 1);
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        KIT_TEST(wp.use_count() == 1);
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
 
         using std::swap;
         swap(wp, wp2);
 
-        BOOST_TEST(wp.use_count() == 1);
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp2 < wp3 || wp3 < wp2));
+        KIT_TEST(wp.use_count() == 1);
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp2 < wp3 || wp3 < wp2));
 
         sp.reset();
 
         wp.swap(wp2);
 
-        BOOST_TEST(wp.use_count() == 1);
-        BOOST_TEST(wp2.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        KIT_TEST(wp.use_count() == 1);
+        KIT_TEST(wp2.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
 
         swap(wp, wp2);
 
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp2.use_count() == 1);
-        BOOST_TEST(!(wp2 < wp3 || wp3 < wp2));
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp2.use_count() == 1);
+        KIT_TEST(!(wp2 < wp3 || wp3 < wp2));
 
         sp2.reset();
 
         wp.swap(wp2);
 
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp2.use_count() == 0);
-        BOOST_TEST(!(wp < wp3 || wp3 < wp));
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp2.use_count() == 0);
+        KIT_TEST(!(wp < wp3 || wp3 < wp));
 
         swap(wp, wp2);
 
-        BOOST_TEST(wp.use_count() == 0);
-        BOOST_TEST(wp2.use_count() == 0);
-        BOOST_TEST(!(wp2 < wp3 || wp3 < wp2));
+        KIT_TEST(wp.use_count() == 0);
+        KIT_TEST(wp2.use_count() == 0);
+        KIT_TEST(!(wp2 < wp3 || wp3 < wp2));
     }
 }
 
@@ -965,280 +965,280 @@ namespace n_comparison
 void test()
 {
     {
-        boost::weak_ptr<X> wp;
-        BOOST_TEST(!(wp < wp));
+        kit::local_weak_ptr<X> wp;
+        KIT_TEST(!(wp < wp));
 
-        boost::weak_ptr<X> wp2;
-        BOOST_TEST(!(wp < wp2 && wp2 < wp));
+        kit::local_weak_ptr<X> wp2;
+        KIT_TEST(!(wp < wp2 && wp2 < wp));
 
-        boost::weak_ptr<X> wp3(wp);
-        BOOST_TEST(!(wp3 < wp3));
-        BOOST_TEST(!(wp < wp3 && wp3 < wp));
+        kit::local_weak_ptr<X> wp3(wp);
+        KIT_TEST(!(wp3 < wp3));
+        KIT_TEST(!(wp < wp3 && wp3 < wp));
     }
 
     {
-        boost::shared_ptr<X> sp(new X);
+        kit::local_shared_ptr<X> sp(new X);
 
-        boost::weak_ptr<X> wp(sp);
-        BOOST_TEST(!(wp < wp));
+        kit::local_weak_ptr<X> wp(sp);
+        KIT_TEST(!(wp < wp));
 
-        boost::weak_ptr<X> wp2;
-        BOOST_TEST(wp < wp2 || wp2 < wp);
-        BOOST_TEST(!(wp < wp2 && wp2 < wp));
+        kit::local_weak_ptr<X> wp2;
+        KIT_TEST(wp < wp2 || wp2 < wp);
+        KIT_TEST(!(wp < wp2 && wp2 < wp));
 
         bool b1 = wp < wp2;
         bool b2 = wp2 < wp;
 
         {
-            boost::weak_ptr<X> wp3(wp);
+            kit::local_weak_ptr<X> wp3(wp);
 
-            BOOST_TEST(!(wp < wp3 || wp3 < wp));
-            BOOST_TEST(!(wp < wp3 && wp3 < wp));
+            KIT_TEST(!(wp < wp3 || wp3 < wp));
+            KIT_TEST(!(wp < wp3 && wp3 < wp));
 
-            BOOST_TEST(wp2 < wp3 || wp3 < wp2);
-            BOOST_TEST(!(wp2 < wp3 && wp3 < wp2));
+            KIT_TEST(wp2 < wp3 || wp3 < wp2);
+            KIT_TEST(!(wp2 < wp3 && wp3 < wp2));
 
-            boost::weak_ptr<X> wp4(wp2);
+            kit::local_weak_ptr<X> wp4(wp2);
 
-            BOOST_TEST(wp4 < wp3 || wp3 < wp4);
-            BOOST_TEST(!(wp4 < wp3 && wp3 < wp4));
+            KIT_TEST(wp4 < wp3 || wp3 < wp4);
+            KIT_TEST(!(wp4 < wp3 && wp3 < wp4));
         }
 
         sp.reset();
 
-        BOOST_TEST(b1 == (wp < wp2));
-        BOOST_TEST(b2 == (wp2 < wp));
+        KIT_TEST(b1 == (wp < wp2));
+        KIT_TEST(b2 == (wp2 < wp));
 
         {
-            boost::weak_ptr<X> wp3(wp);
+            kit::local_weak_ptr<X> wp3(wp);
 
-            BOOST_TEST(!(wp < wp3 || wp3 < wp));
-            BOOST_TEST(!(wp < wp3 && wp3 < wp));
+            KIT_TEST(!(wp < wp3 || wp3 < wp));
+            KIT_TEST(!(wp < wp3 && wp3 < wp));
 
-            BOOST_TEST(wp2 < wp3 || wp3 < wp2);
-            BOOST_TEST(!(wp2 < wp3 && wp3 < wp2));
+            KIT_TEST(wp2 < wp3 || wp3 < wp2);
+            KIT_TEST(!(wp2 < wp3 && wp3 < wp2));
 
-            boost::weak_ptr<X> wp4(wp2);
+            kit::local_weak_ptr<X> wp4(wp2);
 
-            BOOST_TEST(wp4 < wp3 || wp3 < wp4);
-            BOOST_TEST(!(wp4 < wp3 && wp3 < wp4));
+            KIT_TEST(wp4 < wp3 || wp3 < wp4);
+            KIT_TEST(!(wp4 < wp3 && wp3 < wp4));
         }
     }
 
     {
-        boost::shared_ptr<X> sp(new X);
-        boost::shared_ptr<X> sp2(new X);
+        kit::local_shared_ptr<X> sp(new X);
+        kit::local_shared_ptr<X> sp2(new X);
 
-        boost::weak_ptr<X> wp(sp);
-        boost::weak_ptr<X> wp2(sp2);
+        kit::local_weak_ptr<X> wp(sp);
+        kit::local_weak_ptr<X> wp2(sp2);
 
-        BOOST_TEST(wp < wp2 || wp2 < wp);
-        BOOST_TEST(!(wp < wp2 && wp2 < wp));
+        KIT_TEST(wp < wp2 || wp2 < wp);
+        KIT_TEST(!(wp < wp2 && wp2 < wp));
 
         bool b1 = wp < wp2;
         bool b2 = wp2 < wp;
 
         {
-            boost::weak_ptr<X> wp3(wp);
+            kit::local_weak_ptr<X> wp3(wp);
 
-            BOOST_TEST(!(wp < wp3 || wp3 < wp));
-            BOOST_TEST(!(wp < wp3 && wp3 < wp));
+            KIT_TEST(!(wp < wp3 || wp3 < wp));
+            KIT_TEST(!(wp < wp3 && wp3 < wp));
 
-            BOOST_TEST(wp2 < wp3 || wp3 < wp2);
-            BOOST_TEST(!(wp2 < wp3 && wp3 < wp2));
+            KIT_TEST(wp2 < wp3 || wp3 < wp2);
+            KIT_TEST(!(wp2 < wp3 && wp3 < wp2));
 
-            boost::weak_ptr<X> wp4(wp2);
+            kit::local_weak_ptr<X> wp4(wp2);
 
-            BOOST_TEST(wp4 < wp3 || wp3 < wp4);
-            BOOST_TEST(!(wp4 < wp3 && wp3 < wp4));
+            KIT_TEST(wp4 < wp3 || wp3 < wp4);
+            KIT_TEST(!(wp4 < wp3 && wp3 < wp4));
         }
 
         sp.reset();
 
-        BOOST_TEST(b1 == (wp < wp2));
-        BOOST_TEST(b2 == (wp2 < wp));
+        KIT_TEST(b1 == (wp < wp2));
+        KIT_TEST(b2 == (wp2 < wp));
 
         {
-            boost::weak_ptr<X> wp3(wp);
+            kit::local_weak_ptr<X> wp3(wp);
 
-            BOOST_TEST(!(wp < wp3 || wp3 < wp));
-            BOOST_TEST(!(wp < wp3 && wp3 < wp));
+            KIT_TEST(!(wp < wp3 || wp3 < wp));
+            KIT_TEST(!(wp < wp3 && wp3 < wp));
 
-            BOOST_TEST(wp2 < wp3 || wp3 < wp2);
-            BOOST_TEST(!(wp2 < wp3 && wp3 < wp2));
+            KIT_TEST(wp2 < wp3 || wp3 < wp2);
+            KIT_TEST(!(wp2 < wp3 && wp3 < wp2));
 
-            boost::weak_ptr<X> wp4(wp2);
+            kit::local_weak_ptr<X> wp4(wp2);
 
-            BOOST_TEST(wp4 < wp3 || wp3 < wp4);
-            BOOST_TEST(!(wp4 < wp3 && wp3 < wp4));
+            KIT_TEST(wp4 < wp3 || wp3 < wp4);
+            KIT_TEST(!(wp4 < wp3 && wp3 < wp4));
         }
 
         sp2.reset();
 
-        BOOST_TEST(b1 == (wp < wp2));
-        BOOST_TEST(b2 == (wp2 < wp));
+        KIT_TEST(b1 == (wp < wp2));
+        KIT_TEST(b2 == (wp2 < wp));
 
         {
-            boost::weak_ptr<X> wp3(wp);
+            kit::local_weak_ptr<X> wp3(wp);
 
-            BOOST_TEST(!(wp < wp3 || wp3 < wp));
-            BOOST_TEST(!(wp < wp3 && wp3 < wp));
+            KIT_TEST(!(wp < wp3 || wp3 < wp));
+            KIT_TEST(!(wp < wp3 && wp3 < wp));
 
-            BOOST_TEST(wp2 < wp3 || wp3 < wp2);
-            BOOST_TEST(!(wp2 < wp3 && wp3 < wp2));
+            KIT_TEST(wp2 < wp3 || wp3 < wp2);
+            KIT_TEST(!(wp2 < wp3 && wp3 < wp2));
 
-            boost::weak_ptr<X> wp4(wp2);
+            kit::local_weak_ptr<X> wp4(wp2);
 
-            BOOST_TEST(wp4 < wp3 || wp3 < wp4);
-            BOOST_TEST(!(wp4 < wp3 && wp3 < wp4));
+            KIT_TEST(wp4 < wp3 || wp3 < wp4);
+            KIT_TEST(!(wp4 < wp3 && wp3 < wp4));
         }
     }
 
     {
-        boost::shared_ptr<X> sp(new X);
-        boost::shared_ptr<X> sp2(sp);
+        kit::local_shared_ptr<X> sp(new X);
+        kit::local_shared_ptr<X> sp2(sp);
 
-        boost::weak_ptr<X> wp(sp);
-        boost::weak_ptr<X> wp2(sp2);
+        kit::local_weak_ptr<X> wp(sp);
+        kit::local_weak_ptr<X> wp2(sp2);
 
-        BOOST_TEST(!(wp < wp2 || wp2 < wp));
-        BOOST_TEST(!(wp < wp2 && wp2 < wp));
+        KIT_TEST(!(wp < wp2 || wp2 < wp));
+        KIT_TEST(!(wp < wp2 && wp2 < wp));
 
         bool b1 = wp < wp2;
         bool b2 = wp2 < wp;
 
         {
-            boost::weak_ptr<X> wp3(wp);
+            kit::local_weak_ptr<X> wp3(wp);
 
-            BOOST_TEST(!(wp < wp3 || wp3 < wp));
-            BOOST_TEST(!(wp < wp3 && wp3 < wp));
+            KIT_TEST(!(wp < wp3 || wp3 < wp));
+            KIT_TEST(!(wp < wp3 && wp3 < wp));
 
-            BOOST_TEST(!(wp2 < wp3 || wp3 < wp2));
-            BOOST_TEST(!(wp2 < wp3 && wp3 < wp2));
+            KIT_TEST(!(wp2 < wp3 || wp3 < wp2));
+            KIT_TEST(!(wp2 < wp3 && wp3 < wp2));
 
-            boost::weak_ptr<X> wp4(wp2);
+            kit::local_weak_ptr<X> wp4(wp2);
 
-            BOOST_TEST(!(wp4 < wp3 || wp3 < wp4));
-            BOOST_TEST(!(wp4 < wp3 && wp3 < wp4));
+            KIT_TEST(!(wp4 < wp3 || wp3 < wp4));
+            KIT_TEST(!(wp4 < wp3 && wp3 < wp4));
         }
 
         sp.reset();
         sp2.reset();
 
-        BOOST_TEST(b1 == (wp < wp2));
-        BOOST_TEST(b2 == (wp2 < wp));
+        KIT_TEST(b1 == (wp < wp2));
+        KIT_TEST(b2 == (wp2 < wp));
 
         {
-            boost::weak_ptr<X> wp3(wp);
+            kit::local_weak_ptr<X> wp3(wp);
 
-            BOOST_TEST(!(wp < wp3 || wp3 < wp));
-            BOOST_TEST(!(wp < wp3 && wp3 < wp));
+            KIT_TEST(!(wp < wp3 || wp3 < wp));
+            KIT_TEST(!(wp < wp3 && wp3 < wp));
 
-            BOOST_TEST(!(wp2 < wp3 || wp3 < wp2));
-            BOOST_TEST(!(wp2 < wp3 && wp3 < wp2));
+            KIT_TEST(!(wp2 < wp3 || wp3 < wp2));
+            KIT_TEST(!(wp2 < wp3 && wp3 < wp2));
 
-            boost::weak_ptr<X> wp4(wp2);
+            kit::local_weak_ptr<X> wp4(wp2);
 
-            BOOST_TEST(!(wp4 < wp3 || wp3 < wp4));
-            BOOST_TEST(!(wp4 < wp3 && wp3 < wp4));
+            KIT_TEST(!(wp4 < wp3 || wp3 < wp4));
+            KIT_TEST(!(wp4 < wp3 && wp3 < wp4));
         }
     }
 
     {
-        boost::shared_ptr<X> spx(new X);
-        boost::shared_ptr<Y> spy(new Y);
-        boost::shared_ptr<Z> spz(new Z);
+        kit::local_shared_ptr<X> spx(new X);
+        kit::local_shared_ptr<Y> spy(new Y);
+        kit::local_shared_ptr<Z> spz(new Z);
 
-        boost::weak_ptr<X> px(spx);
-        boost::weak_ptr<Y> py(spy);
-        boost::weak_ptr<Z> pz(spz);
+        kit::local_weak_ptr<X> px(spx);
+        kit::local_weak_ptr<Y> py(spy);
+        kit::local_weak_ptr<Z> pz(spz);
 
-        BOOST_TEST(px < py || py < px);
-        BOOST_TEST(px < pz || pz < px);
-        BOOST_TEST(py < pz || pz < py);
+        KIT_TEST(px < py || py < px);
+        KIT_TEST(px < pz || pz < px);
+        KIT_TEST(py < pz || pz < py);
 
-        BOOST_TEST(!(px < py && py < px));
-        BOOST_TEST(!(px < pz && pz < px));
-        BOOST_TEST(!(py < pz && pz < py));
+        KIT_TEST(!(px < py && py < px));
+        KIT_TEST(!(px < pz && pz < px));
+        KIT_TEST(!(py < pz && pz < py));
 
-        boost::weak_ptr<void> pvx(px);
-        BOOST_TEST(!(pvx < pvx));
+        kit::local_weak_ptr<void> pvx(px);
+        KIT_TEST(!(pvx < pvx));
 
-        boost::weak_ptr<void> pvy(py);
-        BOOST_TEST(!(pvy < pvy));
+        kit::local_weak_ptr<void> pvy(py);
+        KIT_TEST(!(pvy < pvy));
 
-        boost::weak_ptr<void> pvz(pz);
-        BOOST_TEST(!(pvz < pvz));
+        kit::local_weak_ptr<void> pvz(pz);
+        KIT_TEST(!(pvz < pvz));
 
-        BOOST_TEST(pvx < pvy || pvy < pvx);
-        BOOST_TEST(pvx < pvz || pvz < pvx);
-        BOOST_TEST(pvy < pvz || pvz < pvy);
+        KIT_TEST(pvx < pvy || pvy < pvx);
+        KIT_TEST(pvx < pvz || pvz < pvx);
+        KIT_TEST(pvy < pvz || pvz < pvy);
 
-        BOOST_TEST(!(pvx < pvy && pvy < pvx));
-        BOOST_TEST(!(pvx < pvz && pvz < pvx));
-        BOOST_TEST(!(pvy < pvz && pvz < pvy));
+        KIT_TEST(!(pvx < pvy && pvy < pvx));
+        KIT_TEST(!(pvx < pvz && pvz < pvx));
+        KIT_TEST(!(pvy < pvz && pvz < pvy));
 
         spx.reset();
         spy.reset();
         spz.reset();
 
-        BOOST_TEST(px < py || py < px);
-        BOOST_TEST(px < pz || pz < px);
-        BOOST_TEST(py < pz || pz < py);
+        KIT_TEST(px < py || py < px);
+        KIT_TEST(px < pz || pz < px);
+        KIT_TEST(py < pz || pz < py);
 
-        BOOST_TEST(!(px < py && py < px));
-        BOOST_TEST(!(px < pz && pz < px));
-        BOOST_TEST(!(py < pz && pz < py));
+        KIT_TEST(!(px < py && py < px));
+        KIT_TEST(!(px < pz && pz < px));
+        KIT_TEST(!(py < pz && pz < py));
 
-        BOOST_TEST(!(pvx < pvx));
-        BOOST_TEST(!(pvy < pvy));
-        BOOST_TEST(!(pvz < pvz));
+        KIT_TEST(!(pvx < pvx));
+        KIT_TEST(!(pvy < pvy));
+        KIT_TEST(!(pvz < pvz));
 
-        BOOST_TEST(pvx < pvy || pvy < pvx);
-        BOOST_TEST(pvx < pvz || pvz < pvx);
-        BOOST_TEST(pvy < pvz || pvz < pvy);
+        KIT_TEST(pvx < pvy || pvy < pvx);
+        KIT_TEST(pvx < pvz || pvz < pvx);
+        KIT_TEST(pvy < pvz || pvz < pvy);
 
-        BOOST_TEST(!(pvx < pvy && pvy < pvx));
-        BOOST_TEST(!(pvx < pvz && pvz < pvx));
-        BOOST_TEST(!(pvy < pvz && pvz < pvy));
+        KIT_TEST(!(pvx < pvy && pvy < pvx));
+        KIT_TEST(!(pvx < pvz && pvz < pvx));
+        KIT_TEST(!(pvy < pvz && pvz < pvy));
     }
 
     {
-        boost::shared_ptr<Z> spz(new Z);
-        boost::shared_ptr<X> spx(spz);
+        kit::local_shared_ptr<Z> spz(new Z);
+        kit::local_shared_ptr<X> spx(spz);
 
-        boost::weak_ptr<Z> pz(spz);
-        boost::weak_ptr<X> px(spx);
-        boost::weak_ptr<Y> py(spz);
+        kit::local_weak_ptr<Z> pz(spz);
+        kit::local_weak_ptr<X> px(spx);
+        kit::local_weak_ptr<Y> py(spz);
 
-        BOOST_TEST(!(px < px));
-        BOOST_TEST(!(py < py));
+        KIT_TEST(!(px < px));
+        KIT_TEST(!(py < py));
 
-        BOOST_TEST(!(px < py || py < px));
-        BOOST_TEST(!(px < pz || pz < px));
-        BOOST_TEST(!(py < pz || pz < py));
+        KIT_TEST(!(px < py || py < px));
+        KIT_TEST(!(px < pz || pz < px));
+        KIT_TEST(!(py < pz || pz < py));
 
-        boost::weak_ptr<void> pvx(px);
-        boost::weak_ptr<void> pvy(py);
-        boost::weak_ptr<void> pvz(pz);
+        kit::local_weak_ptr<void> pvx(px);
+        kit::local_weak_ptr<void> pvy(py);
+        kit::local_weak_ptr<void> pvz(pz);
 
-        BOOST_TEST(!(pvx < pvy || pvy < pvx));
-        BOOST_TEST(!(pvx < pvz || pvz < pvx));
-        BOOST_TEST(!(pvy < pvz || pvz < pvy));
+        KIT_TEST(!(pvx < pvy || pvy < pvx));
+        KIT_TEST(!(pvx < pvz || pvz < pvx));
+        KIT_TEST(!(pvy < pvz || pvz < pvy));
 
         spx.reset();
         spz.reset();
 
-        BOOST_TEST(!(px < px));
-        BOOST_TEST(!(py < py));
+        KIT_TEST(!(px < px));
+        KIT_TEST(!(py < py));
 
-        BOOST_TEST(!(px < py || py < px));
-        BOOST_TEST(!(px < pz || pz < px));
-        BOOST_TEST(!(py < pz || pz < py));
+        KIT_TEST(!(px < py || py < px));
+        KIT_TEST(!(px < pz || pz < px));
+        KIT_TEST(!(py < pz || pz < py));
 
-        BOOST_TEST(!(pvx < pvy || pvy < pvx));
-        BOOST_TEST(!(pvx < pvz || pvz < pvx));
-        BOOST_TEST(!(pvy < pvz || pvz < pvy));
+        KIT_TEST(!(pvx < pvy || pvy < pvx));
+        KIT_TEST(!(pvx < pvz || pvz < pvx));
+        KIT_TEST(!(pvy < pvz || pvz < pvy));
     }
 }
 
@@ -1258,12 +1258,12 @@ namespace n_map
 
 void test()
 {
-    std::vector< boost::shared_ptr<int> > vi;
+    std::vector< kit::local_shared_ptr<int> > vi;
 
     {
-        boost::shared_ptr<int> pi1(new int);
-        boost::shared_ptr<int> pi2(new int);
-        boost::shared_ptr<int> pi3(new int);
+        kit::local_shared_ptr<int> pi1(new int);
+        kit::local_shared_ptr<int> pi2(new int);
+        kit::local_shared_ptr<int> pi3(new int);
 
         vi.push_back(pi1);
         vi.push_back(pi1);
@@ -1278,12 +1278,12 @@ void test()
         vi.push_back(pi1);
     }
 
-    std::vector< boost::shared_ptr<X> > vx;
+    std::vector< kit::local_shared_ptr<X> > vx;
 
     {
-        boost::shared_ptr<X> px1(new X);
-        boost::shared_ptr<X> px2(new X);
-        boost::shared_ptr<X> px3(new X);
+        kit::local_shared_ptr<X> px1(new X);
+        kit::local_shared_ptr<X> px2(new X);
+        kit::local_shared_ptr<X> px3(new X);
 
         vx.push_back(px2);
         vx.push_back(px2);
@@ -1298,26 +1298,26 @@ void test()
         vx.push_back(px2);
     }
 
-    std::map< boost::weak_ptr<void>, long > m;
+    std::map< kit::local_weak_ptr<void>, long > m;
 
     {
-        for(std::vector< boost::shared_ptr<int> >::iterator i = vi.begin(); i != vi.end(); ++i)
+        for(std::vector< kit::local_shared_ptr<int> >::iterator i = vi.begin(); i != vi.end(); ++i)
         {
             ++m[*i];
         }
     }
 
     {
-        for(std::vector< boost::shared_ptr<X> >::iterator i = vx.begin(); i != vx.end(); ++i)
+        for(std::vector< kit::local_shared_ptr<X> >::iterator i = vx.begin(); i != vx.end(); ++i)
         {
             ++m[*i];
         }
     }
 
     {
-        for(std::map< boost::weak_ptr<void>, long >::iterator i = m.begin(); i != m.end(); ++i)
+        for(std::map< kit::local_weak_ptr<void>, long >::iterator i = m.begin(); i != m.end(); ++i)
         {
-            BOOST_TEST(i->first.use_count() == i->second);
+            KIT_TEST(i->first.use_count() == i->second);
         }
     }
 }
@@ -1337,7 +1337,7 @@ int main()
 
     n_map::test();
 
-//    return boost::report_errors();
+//    return kit::report_errors();
   return 0;
 }
 
@@ -1345,9 +1345,9 @@ class incomplete
 {
 };
 
-boost::shared_ptr<incomplete> create_incomplete()
+kit::local_shared_ptr<incomplete> create_incomplete()
 {
-    boost::shared_ptr<incomplete> px(new incomplete);
+    kit::local_shared_ptr<incomplete> px(new incomplete);
     return px;
 }
 

@@ -1,4 +1,4 @@
-// make_shared_perfect_forwarding_test.cpp - a test of make_shared
+// make_local_shared_perfect_forwarding_test.cpp - a test of make_local_shared
 //   perfect forwarding of constructor arguments when using a C++0x
 //   compiler.
 //
@@ -9,10 +9,10 @@
 // http://www.boost.org/LICENSE_1_0.txt
 
 #include "lightweight_test.hpp"
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
+#include <kit/make_local_shared.hpp>
+#include <kit/local_shared_ptr.hpp>
 
-namespace make_shared_perfect_forwarding_test {
+namespace make_local_shared_perfect_forwarding_test {
 
 class myarg
 {
@@ -65,27 +65,27 @@ int main()
 {
     {
         myarg a;
-        boost::shared_ptr< X > x = boost::make_shared< X >(a);
-        BOOST_TEST( x->constructed_by_ == X::ref_constructor);
+        kit::local_shared_ptr< X > x = kit::make_local_shared< X >(a);
+        KIT_TEST( x->constructed_by_ == X::ref_constructor);
     }
     {
         const myarg ca;
-        boost::shared_ptr< X > x = boost::make_shared< X >(ca);
-        BOOST_TEST( x->constructed_by_ == X::const_ref_constructor);
+        kit::local_shared_ptr< X > x = kit::make_local_shared< X >(ca);
+        KIT_TEST( x->constructed_by_ == X::const_ref_constructor);
     }
     {
-        boost::shared_ptr< X > x = boost::make_shared< X >(myarg());
-        BOOST_TEST( x->constructed_by_ == X::move_constructor);
+        kit::local_shared_ptr< X > x = kit::make_local_shared< X >(myarg());
+        KIT_TEST( x->constructed_by_ == X::move_constructor);
     }
     {
         int value = 1;
-        boost::shared_ptr< Y > y = boost::make_shared< Y >(value);
-        BOOST_TEST( y->ref == 1 && value == y->ref );
+        kit::local_shared_ptr< Y > y = kit::make_local_shared< Y >(value);
+        KIT_TEST( y->ref == 1 && value == y->ref );
         ++y->ref;
-        BOOST_TEST( value == y->ref );
+        KIT_TEST( value == y->ref );
     }
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

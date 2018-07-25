@@ -8,7 +8,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <boost/shared_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include "lightweight_test.hpp"
 #include <cstddef>
 #include <memory>
@@ -44,90 +44,90 @@ void f( std::nullptr_t )
 int main()
 {
     {
-        boost::shared_ptr<void> p( nullptr );
+        kit::local_shared_ptr<void> p( nullptr );
 
-        BOOST_TEST( p.get() == 0 );
-        BOOST_TEST( p.use_count() == 0 );
+        KIT_TEST( p.get() == 0 );
+        KIT_TEST( p.use_count() == 0 );
 
-        BOOST_TEST( p == nullptr );
-        BOOST_TEST( nullptr == p );
-        BOOST_TEST( !( p != nullptr ) );
-        BOOST_TEST( !( nullptr != p ) );
+        KIT_TEST( p == nullptr );
+        KIT_TEST( nullptr == p );
+        KIT_TEST( !( p != nullptr ) );
+        KIT_TEST( !( nullptr != p ) );
     }
 
     {
-        boost::shared_ptr<int> p( nullptr, f );
+        kit::local_shared_ptr<int> p( nullptr, f );
 
-        BOOST_TEST( p.get() == 0 );
-        BOOST_TEST( p.use_count() == 1 );
+        KIT_TEST( p.get() == 0 );
+        KIT_TEST( p.use_count() == 1 );
 
-        BOOST_TEST( p == nullptr );
-        BOOST_TEST( nullptr == p );
-        BOOST_TEST( !( p != nullptr ) );
-        BOOST_TEST( !( nullptr != p ) );
+        KIT_TEST( p == nullptr );
+        KIT_TEST( nullptr == p );
+        KIT_TEST( !( p != nullptr ) );
+        KIT_TEST( !( nullptr != p ) );
     }
 
     {
-        boost::shared_ptr<int> p( nullptr, f, std::allocator<int>() );
+        kit::local_shared_ptr<int> p( nullptr, f, std::allocator<int>() );
 
-        BOOST_TEST( p.get() == 0 );
-        BOOST_TEST( p.use_count() == 1 );
+        KIT_TEST( p.get() == 0 );
+        KIT_TEST( p.use_count() == 1 );
 
-        BOOST_TEST( p == nullptr );
-        BOOST_TEST( nullptr == p );
-        BOOST_TEST( !( p != nullptr ) );
-        BOOST_TEST( !( nullptr != p ) );
+        KIT_TEST( p == nullptr );
+        KIT_TEST( nullptr == p );
+        KIT_TEST( !( p != nullptr ) );
+        KIT_TEST( !( nullptr != p ) );
     }
 
     {
-        boost::shared_ptr<int> p( new int );
+        kit::local_shared_ptr<int> p( new int );
 
-        BOOST_TEST( p.get() != 0 );
-        BOOST_TEST( p.use_count() == 1 );
+        KIT_TEST( p.get() != 0 );
+        KIT_TEST( p.use_count() == 1 );
 
-        BOOST_TEST( p != nullptr );
-        BOOST_TEST( nullptr != p );
-        BOOST_TEST( !( p == nullptr ) );
-        BOOST_TEST( !( nullptr == p ) );
+        KIT_TEST( p != nullptr );
+        KIT_TEST( nullptr != p );
+        KIT_TEST( !( p == nullptr ) );
+        KIT_TEST( !( nullptr == p ) );
 
         p = nullptr;
 
-        BOOST_TEST( p.get() == 0 );
-        BOOST_TEST( p.use_count() == 0 );
+        KIT_TEST( p.get() == 0 );
+        KIT_TEST( p.use_count() == 0 );
 
-        BOOST_TEST( p == nullptr );
-        BOOST_TEST( nullptr == p );
-        BOOST_TEST( !( p != nullptr ) );
-        BOOST_TEST( !( nullptr != p ) );
+        KIT_TEST( p == nullptr );
+        KIT_TEST( nullptr == p );
+        KIT_TEST( !( p != nullptr ) );
+        KIT_TEST( !( nullptr != p ) );
     }
 
     {
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
 
-        boost::shared_ptr<X> p( new X );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr<X> p( new X );
+        KIT_TEST( X::instances == 1 );
 
-        BOOST_TEST( p.get() != 0 );
-        BOOST_TEST( p.use_count() == 1 );
+        KIT_TEST( p.get() != 0 );
+        KIT_TEST( p.use_count() == 1 );
 
-        BOOST_TEST( p != nullptr );
-        BOOST_TEST( nullptr != p );
-        BOOST_TEST( !( p == nullptr ) );
-        BOOST_TEST( !( nullptr == p ) );
+        KIT_TEST( p != nullptr );
+        KIT_TEST( nullptr != p );
+        KIT_TEST( !( p == nullptr ) );
+        KIT_TEST( !( nullptr == p ) );
 
         p = nullptr;
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
 
-        BOOST_TEST( p.get() == 0 );
-        BOOST_TEST( p.use_count() == 0 );
+        KIT_TEST( p.get() == 0 );
+        KIT_TEST( p.use_count() == 0 );
 
-        BOOST_TEST( p == nullptr );
-        BOOST_TEST( nullptr == p );
-        BOOST_TEST( !( p != nullptr ) );
-        BOOST_TEST( !( nullptr != p ) );
+        KIT_TEST( p == nullptr );
+        KIT_TEST( nullptr == p );
+        KIT_TEST( !( p != nullptr ) );
+        KIT_TEST( !( nullptr != p ) );
     }
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

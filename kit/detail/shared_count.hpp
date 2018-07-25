@@ -1,5 +1,5 @@
-#ifndef BOOST_DETAIL_SHARED_COUNT_HPP_INCLUDED
-#define BOOST_DETAIL_SHARED_COUNT_HPP_INCLUDED
+#ifndef KIT_DETAIL_SHARED_COUNT_HPP_INCLUDED
+#define KIT_DETAIL_SHARED_COUNT_HPP_INCLUDED
 
 //
 //  detail/shared_count.hpp
@@ -12,14 +12,14 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <boost/detail/checked_delete.hpp>
-#include <boost/bad_weak_ptr.hpp>
-#include <boost/detail/sp_counted_base_nt.hpp>
-#include <boost/detail/sp_counted_impl.hpp>
+#include <kit/detail/checked_delete.hpp>
+#include <kit/bad_local_weak_ptr.hpp>
+#include <kit/detail/sp_counted_base_nt.hpp>
+#include <kit/detail/sp_counted_impl.hpp>
 #include <functional> // std::less
 #include <memory>
 
-namespace boost {
+namespace kit {
 
   namespace detail {
 
@@ -74,7 +74,7 @@ namespace boost {
         try {
           pi_ = new sp_counted_impl_p<Y>(p);
         } catch (...) {
-          boost::checked_delete(p);
+          kit::checked_delete(p);
           throw;
         }
       }
@@ -181,7 +181,7 @@ namespace boost {
         r.pi_ = 0;
       }
 
-      explicit shared_count(weak_count const &r); // throws bad_weak_ptr when r.use_count() == 0
+      explicit shared_count(weak_count const &r); // throws bad_local_weak_ptr when r.use_count() == 0
       shared_count(weak_count const &r,
                    sp_nothrow_tag); // constructs an empty *this when r.use_count() == 0
 
@@ -338,7 +338,7 @@ namespace boost {
     inline shared_count::shared_count(weak_count const &r)
         : pi_(r.pi_) {
       if (pi_ == 0 || !pi_->add_ref_lock()) {
-        throw boost::bad_weak_ptr();
+        throw kit::bad_local_weak_ptr();
       }
     }
 
@@ -351,6 +351,6 @@ namespace boost {
 
   } // namespace detail
 
-} // namespace boost
+} // namespace kit
 
-#endif // #ifndef BOOST_DETAIL_SHARED_COUNT_HPP_INCLUDED
+#endif // #ifndef KIT_DETAIL_SHARED_COUNT_HPP_INCLUDED

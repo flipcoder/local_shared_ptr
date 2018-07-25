@@ -12,15 +12,15 @@
 //
 
 
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
+#include <kit/enable_shared_from_this.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include "lightweight_test.hpp"
 
 //
 
 namespace esft_second_ptr_test {
 
-class X: public boost::enable_shared_from_this<X>
+class X: public kit::enable_shared_from_this<X>
 {
 };
 
@@ -30,26 +30,26 @@ void null_deleter( void const* )
 
 int main()
 {
-    boost::shared_ptr<X> px( new X );
+    kit::local_shared_ptr<X> px( new X );
 
     {
-        boost::shared_ptr<X> px2( px.get(), null_deleter );
-        BOOST_TEST( px == px2 );
+        kit::local_shared_ptr<X> px2( px.get(), null_deleter );
+        KIT_TEST( px == px2 );
     }
 
     try
     {
-        boost::shared_ptr< X > qx = px->shared_from_this();
+        kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-        BOOST_TEST( px == qx );
-        BOOST_TEST( !( px < qx ) && !( qx < px ) );
+        KIT_TEST( px == qx );
+        KIT_TEST( !( px < qx ) && !( qx < px ) );
     }
-    catch( boost::bad_weak_ptr const& )
+    catch( kit::bad_local_weak_ptr const& )
     {
-        BOOST_ERROR( "px->shared_from_this() failed" );
+        KIT_ERROR( "px->shared_from_this() failed" );
     }
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

@@ -1,7 +1,7 @@
-#ifndef BOOST_MAKE_SHARED_HPP_INCLUDED
-#define BOOST_MAKE_SHARED_HPP_INCLUDED
+#ifndef KIT_MAKE_SHARED_HPP_INCLUDED
+#define KIT_MAKE_SHARED_HPP_INCLUDED
 
-//  make_shared_object.hpp
+//  make_local_shared_object.hpp
 //
 //  Copyright (c) 2007, 2008, 2012 Peter Dimov
 //
@@ -12,12 +12,12 @@
 //  See http://www.boost.org/libs/smart_ptr/make_shared.html
 //  for documentation.
 
-#include <boost/detail/sp_forward.hpp>
-#include <boost/shared_ptr.hpp>
+#include <kit/detail/sp_forward.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include <cstddef>
 #include <new>
 
-namespace boost {
+namespace kit {
 
   namespace detail {
 
@@ -126,7 +126,7 @@ namespace boost {
 
     template <class T>
     struct sp_if_not_array {
-      typedef boost::shared_ptr<T> type;
+      typedef kit::local_shared_ptr<T> type;
     };
 
     template <class T>
@@ -137,16 +137,16 @@ namespace boost {
 
   } // namespace detail
 
-#define BOOST_SP_MSD(T) boost::detail::sp_inplace_tag<boost::detail::sp_ms_deleter<T>>()
+#define KIT_SP_MSD(T) kit::detail::sp_inplace_tag<kit::detail::sp_ms_deleter<T>>()
 
   // _noinit versions
 
   template <class T>
-  typename boost::detail::sp_if_not_array<T>::type make_shared_noinit() {
-    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
+  typename kit::detail::sp_if_not_array<T>::type make_local_shared_noinit() {
+    kit::local_shared_ptr<T> pt(static_cast<T *>(0), KIT_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter<T> *pd
-        = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
+    kit::detail::sp_ms_deleter<T> *pd
+        = static_cast<kit::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
     void *pv = pd->address();
 
@@ -155,16 +155,16 @@ namespace boost {
 
     T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
-    return boost::shared_ptr<T>(pt, pt2);
+    kit::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return kit::local_shared_ptr<T>(pt, pt2);
   }
 
   template <class T, class A>
-  typename boost::detail::sp_if_not_array<T>::type allocate_shared_noinit(A const &a) {
-    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T), a);
+  typename kit::detail::sp_if_not_array<T>::type allocate_shared_noinit(A const &a) {
+    kit::local_shared_ptr<T> pt(static_cast<T *>(0), KIT_SP_MSD(T), a);
 
-    boost::detail::sp_ms_deleter<T> *pd
-        = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
+    kit::detail::sp_ms_deleter<T> *pd
+        = static_cast<kit::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
     void *pv = pd->address();
 
@@ -173,55 +173,55 @@ namespace boost {
 
     T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
-    return boost::shared_ptr<T>(pt, pt2);
+    kit::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return kit::local_shared_ptr<T>(pt, pt2);
   }
 
   // Variadic templates, rvalue reference
 
   template <class T, class... Args>
-  typename boost::detail::sp_if_not_array<T>::type make_shared(Args &&... args) {
-    boost::shared_ptr<T> pt(static_cast<T *>(0), BOOST_SP_MSD(T));
+  typename kit::detail::sp_if_not_array<T>::type make_local_shared(Args &&... args) {
+    kit::local_shared_ptr<T> pt(static_cast<T *>(0), KIT_SP_MSD(T));
 
-    boost::detail::sp_ms_deleter<T> *pd
-        = static_cast<boost::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
+    kit::detail::sp_ms_deleter<T> *pd
+        = static_cast<kit::detail::sp_ms_deleter<T> *>(pt._internal_get_untyped_deleter());
 
     void *pv = pd->address();
 
-    ::new (pv) T(boost::detail::sp_forward<Args>(args)...);
+    ::new (pv) T(kit::detail::sp_forward<Args>(args)...);
     pd->set_initialized();
 
     T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
-    return boost::shared_ptr<T>(pt, pt2);
+    kit::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return kit::local_shared_ptr<T>(pt, pt2);
   }
 
   template <class T, class A, class... Args>
-  typename boost::detail::sp_if_not_array<T>::type allocate_shared(A const &a, Args &&... args) {
+  typename kit::detail::sp_if_not_array<T>::type allocate_shared(A const &a, Args &&... args) {
     typedef typename std::allocator_traits<A>::template rebind_alloc<T> A2;
     A2 a2(a);
 
-    typedef boost::detail::sp_as_deleter<T, A2> D;
+    typedef kit::detail::sp_as_deleter<T, A2> D;
 
-    boost::shared_ptr<T> pt(static_cast<T *>(0), boost::detail::sp_inplace_tag<D>(), a2);
+    kit::local_shared_ptr<T> pt(static_cast<T *>(0), kit::detail::sp_inplace_tag<D>(), a2);
 
     D *pd = static_cast<D *>(pt._internal_get_untyped_deleter());
     void *pv = pd->address();
 
     std::allocator_traits<A2>::construct(a2, static_cast<T *>(pv),
-                                         boost::detail::sp_forward<Args>(args)...);
+                                         kit::detail::sp_forward<Args>(args)...);
 
     pd->set_initialized();
 
     T *pt2 = static_cast<T *>(pv);
 
-    boost::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
-    return boost::shared_ptr<T>(pt, pt2);
+    kit::detail::sp_enable_shared_from_this(&pt, pt2, pt2);
+    return kit::local_shared_ptr<T>(pt, pt2);
   }
 
-#undef BOOST_SP_MSD
+#undef KIT_SP_MSD
 
-} // namespace boost
+} // namespace kit
 
-#endif // #ifndef BOOST_MAKE_SHARED_HPP_INCLUDED
+#endif // #ifndef KIT_MAKE_SHARED_HPP_INCLUDED

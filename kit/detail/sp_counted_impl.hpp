@@ -1,5 +1,5 @@
-#ifndef BOOST_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED
-#define BOOST_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED
+#ifndef KIT_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED
+#define KIT_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED
 
 //
 //  detail/sp_counted_impl.hpp
@@ -12,12 +12,12 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <boost/detail/checked_delete.hpp>
-#include <boost/detail/sp_counted_base_nt.hpp>
+#include <kit/detail/checked_delete.hpp>
+#include <kit/detail/sp_counted_base_nt.hpp>
 #include <cstddef> // std::size_t
 #include <typeinfo>
 
-namespace boost {
+namespace kit {
 
   namespace detail {
 
@@ -38,7 +38,7 @@ namespace boost {
 
       virtual void dispose() // nothrow
       {
-        boost::checked_delete(px_);
+        kit::checked_delete(px_);
       }
 
       virtual void *get_deleter(std::type_info const &) {
@@ -142,6 +142,6 @@ namespace boost {
 
   } // namespace detail
 
-} // namespace boost
+} // namespace kit
 
-#endif // #ifndef BOOST_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED
+#endif // #ifndef KIT_DETAIL_SP_COUNTED_IMPL_HPP_INCLUDED

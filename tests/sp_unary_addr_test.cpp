@@ -8,7 +8,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <boost/shared_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include "lightweight_test.hpp"
 #include <memory>
 
@@ -43,24 +43,24 @@ int main()
     X x;
 
     {
-        boost::shared_ptr<X> p( &x, deleter() );
+        kit::local_shared_ptr<X> p( &x, deleter() );
 
-        deleter * q = boost::get_deleter<deleter>( p );
+        deleter * q = kit::get_deleter<deleter>( p );
 
-        BOOST_TEST( q != 0 );
-        BOOST_TEST( q != 0 && q->data == 17041 );
+        KIT_TEST( q != 0 );
+        KIT_TEST( q != 0 && q->data == 17041 );
     }
 
     {
-        boost::shared_ptr<X> p( &x, deleter(), std::allocator<X>() );
+        kit::local_shared_ptr<X> p( &x, deleter(), std::allocator<X>() );
 
-        deleter * q = boost::get_deleter<deleter>( p );
+        deleter * q = kit::get_deleter<deleter>( p );
 
-        BOOST_TEST( q != 0 );
-        BOOST_TEST( q != 0 && q->data == 17041 );
+        KIT_TEST( q != 0 );
+        KIT_TEST( q != 0 && q->data == 17041 );
     }
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

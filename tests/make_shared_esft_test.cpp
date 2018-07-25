@@ -1,4 +1,4 @@
-//  make_shared_esft_test.cpp
+//  make_local_shared_esft_test.cpp
 //
 //  Copyright 2007-2009 Peter Dimov
 //
@@ -7,13 +7,13 @@
 //  http://www.boost.org/LICENSE_1_0.txt
 
 #include "lightweight_test.hpp"
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <kit/make_local_shared.hpp>
+#include <kit/local_shared_ptr.hpp>
+#include <kit/enable_shared_from_this.hpp>
 
-namespace make_shared_esft_test {
+namespace make_local_shared_esft_test {
 
-class X: public boost::enable_shared_from_this<X>
+class X: public kit::enable_shared_from_this<X>
 {
 private:
 
@@ -39,229 +39,229 @@ int X::instances = 0;
 
 int main()
 {
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > px = boost::make_shared< X >();
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr< X > px = kit::make_local_shared< X >();
+        KIT_TEST( X::instances == 1 );
 
         try
         {
-            boost::shared_ptr< X > qx = px->shared_from_this();
+            kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-            BOOST_TEST( px == qx );
-            BOOST_TEST( !( px < qx ) && !( qx < px ) );
+            KIT_TEST( px == qx );
+            KIT_TEST( !( px < qx ) && !( qx < px ) );
 
             px.reset();
-            BOOST_TEST( X::instances == 1 );
+            KIT_TEST( X::instances == 1 );
         }
-        catch( boost::bad_weak_ptr const& )
+        catch( kit::bad_local_weak_ptr const& )
         {
-            BOOST_ERROR( "px->shared_from_this() failed" );
+            KIT_ERROR( "px->shared_from_this() failed" );
         }
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > px = boost::make_shared< X >( 1 );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr< X > px = kit::make_local_shared< X >( 1 );
+        KIT_TEST( X::instances == 1 );
 
         try
         {
-            boost::shared_ptr< X > qx = px->shared_from_this();
+            kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-            BOOST_TEST( px == qx );
-            BOOST_TEST( !( px < qx ) && !( qx < px ) );
+            KIT_TEST( px == qx );
+            KIT_TEST( !( px < qx ) && !( qx < px ) );
 
             px.reset();
-            BOOST_TEST( X::instances == 1 );
+            KIT_TEST( X::instances == 1 );
         }
-        catch( boost::bad_weak_ptr const& )
+        catch( kit::bad_local_weak_ptr const& )
         {
-            BOOST_ERROR( "px->shared_from_this() failed" );
+            KIT_ERROR( "px->shared_from_this() failed" );
         }
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > px = boost::make_shared< X >( 1, 2 );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr< X > px = kit::make_local_shared< X >( 1, 2 );
+        KIT_TEST( X::instances == 1 );
 
         try
         {
-            boost::shared_ptr< X > qx = px->shared_from_this();
+            kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-            BOOST_TEST( px == qx );
-            BOOST_TEST( !( px < qx ) && !( qx < px ) );
+            KIT_TEST( px == qx );
+            KIT_TEST( !( px < qx ) && !( qx < px ) );
 
             px.reset();
-            BOOST_TEST( X::instances == 1 );
+            KIT_TEST( X::instances == 1 );
         }
-        catch( boost::bad_weak_ptr const& )
+        catch( kit::bad_local_weak_ptr const& )
         {
-            BOOST_ERROR( "px->shared_from_this() failed" );
+            KIT_ERROR( "px->shared_from_this() failed" );
         }
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > px = boost::make_shared< X >( 1, 2, 3 );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr< X > px = kit::make_local_shared< X >( 1, 2, 3 );
+        KIT_TEST( X::instances == 1 );
 
         try
         {
-            boost::shared_ptr< X > qx = px->shared_from_this();
+            kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-            BOOST_TEST( px == qx );
-            BOOST_TEST( !( px < qx ) && !( qx < px ) );
+            KIT_TEST( px == qx );
+            KIT_TEST( !( px < qx ) && !( qx < px ) );
 
             px.reset();
-            BOOST_TEST( X::instances == 1 );
+            KIT_TEST( X::instances == 1 );
         }
-        catch( boost::bad_weak_ptr const& )
+        catch( kit::bad_local_weak_ptr const& )
         {
-            BOOST_ERROR( "px->shared_from_this() failed" );
+            KIT_ERROR( "px->shared_from_this() failed" );
         }
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > px = boost::make_shared< X >( 1, 2, 3, 4 );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr< X > px = kit::make_local_shared< X >( 1, 2, 3, 4 );
+        KIT_TEST( X::instances == 1 );
 
         try
         {
-            boost::shared_ptr< X > qx = px->shared_from_this();
+            kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-            BOOST_TEST( px == qx );
-            BOOST_TEST( !( px < qx ) && !( qx < px ) );
+            KIT_TEST( px == qx );
+            KIT_TEST( !( px < qx ) && !( qx < px ) );
 
             px.reset();
-            BOOST_TEST( X::instances == 1 );
+            KIT_TEST( X::instances == 1 );
         }
-        catch( boost::bad_weak_ptr const& )
+        catch( kit::bad_local_weak_ptr const& )
         {
-            BOOST_ERROR( "px->shared_from_this() failed" );
+            KIT_ERROR( "px->shared_from_this() failed" );
         }
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > px = boost::make_shared< X >( 1, 2, 3, 4, 5 );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr< X > px = kit::make_local_shared< X >( 1, 2, 3, 4, 5 );
+        KIT_TEST( X::instances == 1 );
 
         try
         {
-            boost::shared_ptr< X > qx = px->shared_from_this();
+            kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-            BOOST_TEST( px == qx );
-            BOOST_TEST( !( px < qx ) && !( qx < px ) );
+            KIT_TEST( px == qx );
+            KIT_TEST( !( px < qx ) && !( qx < px ) );
 
             px.reset();
-            BOOST_TEST( X::instances == 1 );
+            KIT_TEST( X::instances == 1 );
         }
-        catch( boost::bad_weak_ptr const& )
+        catch( kit::bad_local_weak_ptr const& )
         {
-            BOOST_ERROR( "px->shared_from_this() failed" );
+            KIT_ERROR( "px->shared_from_this() failed" );
         }
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > px = boost::make_shared< X >( 1, 2, 3, 4, 5, 6 );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr< X > px = kit::make_local_shared< X >( 1, 2, 3, 4, 5, 6 );
+        KIT_TEST( X::instances == 1 );
 
         try
         {
-            boost::shared_ptr< X > qx = px->shared_from_this();
+            kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-            BOOST_TEST( px == qx );
-            BOOST_TEST( !( px < qx ) && !( qx < px ) );
+            KIT_TEST( px == qx );
+            KIT_TEST( !( px < qx ) && !( qx < px ) );
 
             px.reset();
-            BOOST_TEST( X::instances == 1 );
+            KIT_TEST( X::instances == 1 );
         }
-        catch( boost::bad_weak_ptr const& )
+        catch( kit::bad_local_weak_ptr const& )
         {
-            BOOST_ERROR( "px->shared_from_this() failed" );
+            KIT_ERROR( "px->shared_from_this() failed" );
         }
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > px = boost::make_shared< X >( 1, 2, 3, 4, 5, 6, 7 );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr< X > px = kit::make_local_shared< X >( 1, 2, 3, 4, 5, 6, 7 );
+        KIT_TEST( X::instances == 1 );
 
         try
         {
-            boost::shared_ptr< X > qx = px->shared_from_this();
+            kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-            BOOST_TEST( px == qx );
-            BOOST_TEST( !( px < qx ) && !( qx < px ) );
+            KIT_TEST( px == qx );
+            KIT_TEST( !( px < qx ) && !( qx < px ) );
 
             px.reset();
-            BOOST_TEST( X::instances == 1 );
+            KIT_TEST( X::instances == 1 );
         }
-        catch( boost::bad_weak_ptr const& )
+        catch( kit::bad_local_weak_ptr const& )
         {
-            BOOST_ERROR( "px->shared_from_this() failed" );
+            KIT_ERROR( "px->shared_from_this() failed" );
         }
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > px = boost::make_shared< X >( 1, 2, 3, 4, 5, 6, 7, 8 );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr< X > px = kit::make_local_shared< X >( 1, 2, 3, 4, 5, 6, 7, 8 );
+        KIT_TEST( X::instances == 1 );
 
         try
         {
-            boost::shared_ptr< X > qx = px->shared_from_this();
+            kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-            BOOST_TEST( px == qx );
-            BOOST_TEST( !( px < qx ) && !( qx < px ) );
+            KIT_TEST( px == qx );
+            KIT_TEST( !( px < qx ) && !( qx < px ) );
 
             px.reset();
-            BOOST_TEST( X::instances == 1 );
+            KIT_TEST( X::instances == 1 );
         }
-        catch( boost::bad_weak_ptr const& )
+        catch( kit::bad_local_weak_ptr const& )
         {
-            BOOST_ERROR( "px->shared_from_this() failed" );
+            KIT_ERROR( "px->shared_from_this() failed" );
         }
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > px = boost::make_shared< X >( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr< X > px = kit::make_local_shared< X >( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+        KIT_TEST( X::instances == 1 );
 
         try
         {
-            boost::shared_ptr< X > qx = px->shared_from_this();
+            kit::local_shared_ptr< X > qx = px->shared_from_this();
 
-            BOOST_TEST( px == qx );
-            BOOST_TEST( !( px < qx ) && !( qx < px ) );
+            KIT_TEST( px == qx );
+            KIT_TEST( !( px < qx ) && !( qx < px ) );
 
             px.reset();
-            BOOST_TEST( X::instances == 1 );
+            KIT_TEST( X::instances == 1 );
         }
-        catch( boost::bad_weak_ptr const& )
+        catch( kit::bad_local_weak_ptr const& )
         {
-            BOOST_ERROR( "px->shared_from_this() failed" );
+            KIT_ERROR( "px->shared_from_this() failed" );
         }
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

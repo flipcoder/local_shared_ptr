@@ -8,7 +8,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <boost/shared_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include "lightweight_test.hpp"
 
 namespace sp_zero_compare_test {
@@ -28,51 +28,51 @@ void intrusive_ptr_release( W* )
 int main()
 {
 //    {
-//        boost::scoped_ptr<int> p;
+//        kit::scoped_ptr<int> p;
 //
-//        BOOST_TEST( p == 0 );
-//        BOOST_TEST( 0 == p );
-//        BOOST_TEST( !( p != 0 ) );
-//        BOOST_TEST( !( 0 != p ) );
+//        KIT_TEST( p == 0 );
+//        KIT_TEST( 0 == p );
+//        KIT_TEST( !( p != 0 ) );
+//        KIT_TEST( !( 0 != p ) );
 //    }
 //
 //    {
-//        boost::scoped_array<int> p;
+//        kit::scoped_array<int> p;
 //
-//        BOOST_TEST( p == 0 );
-//        BOOST_TEST( 0 == p );
-//        BOOST_TEST( !( p != 0 ) );
-//        BOOST_TEST( !( 0 != p ) );
+//        KIT_TEST( p == 0 );
+//        KIT_TEST( 0 == p );
+//        KIT_TEST( !( p != 0 ) );
+//        KIT_TEST( !( 0 != p ) );
 //    }
 
     {
-        boost::shared_ptr<int> p;
+        kit::local_shared_ptr<int> p;
 
-        BOOST_TEST( p == 0 );
-        BOOST_TEST( 0 == p );
-        BOOST_TEST( !( p != 0 ) );
-        BOOST_TEST( !( 0 != p ) );
+        KIT_TEST( p == 0 );
+        KIT_TEST( 0 == p );
+        KIT_TEST( !( p != 0 ) );
+        KIT_TEST( !( 0 != p ) );
     }
 
 //    {
-//        boost::shared_array<int> p;
+//        kit::shared_array<int> p;
 //
-//        BOOST_TEST( p == 0 );
-//        BOOST_TEST( 0 == p );
-//        BOOST_TEST( !( p != 0 ) );
-//        BOOST_TEST( !( 0 != p ) );
+//        KIT_TEST( p == 0 );
+//        KIT_TEST( 0 == p );
+//        KIT_TEST( !( p != 0 ) );
+//        KIT_TEST( !( 0 != p ) );
 //    }
 //
 //    {
-//        boost::intrusive_ptr<W> p;
+//        kit::intrusive_ptr<W> p;
 //
-//        BOOST_TEST( p == 0 );
-//        BOOST_TEST( 0 == p );
-//        BOOST_TEST( !( p != 0 ) );
-//        BOOST_TEST( !( 0 != p ) );
+//        KIT_TEST( p == 0 );
+//        KIT_TEST( 0 == p );
+//        KIT_TEST( !( p != 0 ) );
+//        KIT_TEST( !( 0 != p ) );
 //    }
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

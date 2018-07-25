@@ -7,9 +7,9 @@
 // http://www.boost.org/LICENSE_1_0.txt
 
 #include "lightweight_test.hpp"
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <kit/make_local_shared.hpp>
+#include <kit/local_shared_ptr.hpp>
+#include <kit/local_weak_ptr.hpp>
 #include <cstddef>
 #include "tests.hpp"
 
@@ -25,14 +25,14 @@ private:
     void * operator new( std::size_t n )
     {
         // lack of this definition causes link errors on Comeau C++
-        BOOST_ERROR( "private X::new called" );
+        KIT_ERROR( "private X::new called" );
         return ::operator new( n );
     }
 
     void operator delete( void * p )
     {
         // lack of this definition causes link errors on MSVC
-        BOOST_ERROR( "private X::delete called" );
+        KIT_ERROR( "private X::delete called" );
         ::operator delete( p );
     }
 
@@ -58,152 +58,152 @@ int X::instances = 0;
 int main()
 {
     {
-        boost::shared_ptr< int > pi = boost::allocate_shared< int >( std::allocator<int>() );
+        kit::local_shared_ptr< int > pi = kit::allocate_shared< int >( std::allocator<int>() );
 
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( *pi == 0 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( *pi == 0 );
     }
 
     {
-        boost::shared_ptr< int > pi = boost::allocate_shared< int >( std::allocator<int>(), 5 );
+        kit::local_shared_ptr< int > pi = kit::allocate_shared< int >( std::allocator<int>(), 5 );
 
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( *pi == 5 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( *pi == 5 );
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr< X > pi = boost::allocate_shared< X >( std::allocator<void>() );
-        boost::weak_ptr<X> wp( pi );
+        kit::local_shared_ptr< X > pi = kit::allocate_shared< X >( std::allocator<void>() );
+        kit::local_weak_ptr<X> wp( pi );
 
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( pi->v == 0 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( pi->v == 0 );
 
         pi.reset();
 
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr< X > pi = boost::allocate_shared< X >( std::allocator<void>(), 1 );
-        boost::weak_ptr<X> wp( pi );
+        kit::local_shared_ptr< X > pi = kit::allocate_shared< X >( std::allocator<void>(), 1 );
+        kit::local_weak_ptr<X> wp( pi );
 
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( pi->v == 1 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( pi->v == 1 );
 
         pi.reset();
 
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr< X > pi = boost::allocate_shared< X >( std::allocator<void>(), 1, 2 );
-        boost::weak_ptr<X> wp( pi );
+        kit::local_shared_ptr< X > pi = kit::allocate_shared< X >( std::allocator<void>(), 1, 2 );
+        kit::local_weak_ptr<X> wp( pi );
 
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( pi->v == 1+2 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( pi->v == 1+2 );
 
         pi.reset();
 
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr< X > pi = boost::allocate_shared< X >( std::allocator<void>(), 1, 2, 3 );
-        boost::weak_ptr<X> wp( pi );
+        kit::local_shared_ptr< X > pi = kit::allocate_shared< X >( std::allocator<void>(), 1, 2, 3 );
+        kit::local_weak_ptr<X> wp( pi );
 
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( pi->v == 1+2+3 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( pi->v == 1+2+3 );
 
         pi.reset();
 
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr< X > pi = boost::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4 );
-        boost::weak_ptr<X> wp( pi );
+        kit::local_shared_ptr< X > pi = kit::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4 );
+        kit::local_weak_ptr<X> wp( pi );
 
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( pi->v == 1+2+3+4 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( pi->v == 1+2+3+4 );
 
         pi.reset();
 
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr< X > pi = boost::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4, 5 );
-        boost::weak_ptr<X> wp( pi );
+        kit::local_shared_ptr< X > pi = kit::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4, 5 );
+        kit::local_weak_ptr<X> wp( pi );
 
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( pi->v == 1+2+3+4+5 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( pi->v == 1+2+3+4+5 );
 
         pi.reset();
 
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr< X > pi = boost::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4, 5, 6 );
-        boost::weak_ptr<X> wp( pi );
+        kit::local_shared_ptr< X > pi = kit::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4, 5, 6 );
+        kit::local_weak_ptr<X> wp( pi );
 
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( pi->v == 1+2+3+4+5+6 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( pi->v == 1+2+3+4+5+6 );
 
         pi.reset();
 
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr< X > pi = boost::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4, 5, 6, 7 );
-        boost::weak_ptr<X> wp( pi );
+        kit::local_shared_ptr< X > pi = kit::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4, 5, 6, 7 );
+        kit::local_weak_ptr<X> wp( pi );
 
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( pi->v == 1+2+3+4+5+6+7 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( pi->v == 1+2+3+4+5+6+7 );
 
         pi.reset();
 
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr< X > pi = boost::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4, 5, 6, 7, 8 );
-        boost::weak_ptr<X> wp( pi );
+        kit::local_shared_ptr< X > pi = kit::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4, 5, 6, 7, 8 );
+        kit::local_weak_ptr<X> wp( pi );
 
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( pi->v == 1+2+3+4+5+6+7+8 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( pi->v == 1+2+3+4+5+6+7+8 );
 
         pi.reset();
 
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
     {
-        boost::shared_ptr< X > pi = boost::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4, 5, 6, 7, 8, 9 );
-        boost::weak_ptr<X> wp( pi );
+        kit::local_shared_ptr< X > pi = kit::allocate_shared< X >( std::allocator<void>(), 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+        kit::local_weak_ptr<X> wp( pi );
 
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( pi.get() != 0 );
-        BOOST_TEST( pi->v == 1+2+3+4+5+6+7+8+9 );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( pi.get() != 0 );
+        KIT_TEST( pi->v == 1+2+3+4+5+6+7+8+9 );
 
         pi.reset();
 
-        BOOST_TEST( X::instances == 0 );
+        KIT_TEST( X::instances == 0 );
     }
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

@@ -1,4 +1,4 @@
-//  shared_ptr_alloc3_test.cpp
+//  local_shared_ptr_alloc3_test.cpp
 //
 //  Copyright (c) 2005, 2014 Peter Dimov
 //
@@ -8,13 +8,13 @@
 
 
 #include "lightweight_test.hpp"
-#include <boost/shared_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include <memory>
 #include <cstddef>
 
 //
 
-namespace shared_ptr_alloc3_test {
+namespace local_shared_ptr_alloc3_test {
 
 struct D;
 
@@ -29,7 +29,7 @@ struct X
 
     ~X()
     {
-        BOOST_TEST( deleted_ );
+        KIT_TEST( deleted_ );
         --instances;
     }
 
@@ -56,25 +56,25 @@ struct D
 
 int main()
 {
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
-    boost::shared_ptr<void> pv( new X, D(), std::allocator<X>() );
+    kit::local_shared_ptr<void> pv( new X, D(), std::allocator<X>() );
 
-    BOOST_TEST( X::instances == 1 );
+    KIT_TEST( X::instances == 1 );
 
     pv.reset();
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     pv.reset( new X, D(), std::allocator<void>() );
 
-    BOOST_TEST( X::instances == 1 );
+    KIT_TEST( X::instances == 1 );
 
     pv.reset();
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

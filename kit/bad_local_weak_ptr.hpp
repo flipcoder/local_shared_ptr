@@ -1,8 +1,8 @@
-#ifndef BOOST_BAD_WEAK_PTR_HPP_INCLUDED
-#define BOOST_BAD_WEAK_PTR_HPP_INCLUDED
+#ifndef KIT_BAD_WEAK_PTR_HPP_INCLUDED
+#define KIT_BAD_WEAK_PTR_HPP_INCLUDED
 
 //
-//  boost/smart_ptr/bad_weak_ptr.hpp
+//  boost/smart_ptr/bad_local_weak_ptr.hpp
 //
 //  Copyright (c) 2001, 2002, 2003 Peter Dimov and Multi Media Ltd.
 //
@@ -13,15 +13,15 @@
 
 #include <exception>
 
-namespace boost {
+namespace kit {
 
-  class bad_weak_ptr : public std::exception {
+  class bad_local_weak_ptr : public std::exception {
   public:
     virtual char const *what() const throw() {
-      return "tr1::bad_weak_ptr";
+      return "kit::bad_local_weak_ptr";
     }
   };
 
-} // namespace boost
+} // namespace kit
 
-#endif // #ifndef BOOST_BAD_WEAK_PTR_HPP_INCLUDED
+#endif // #ifndef KIT_BAD_WEAK_PTR_HPP_INCLUDED

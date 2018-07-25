@@ -1,5 +1,5 @@
-#ifndef BOOST_SMART_PTR_HPP_INCLUDED
-#define BOOST_SMART_PTR_HPP_INCLUDED
+#ifndef KIT_SMART_PTR_HPP_INCLUDED
+#define KIT_SMART_PTR_HPP_INCLUDED
 
 //
 //  smart_ptr.hpp
@@ -11,9 +11,9 @@
 //  See http://www.boost.org/libs/smart_ptr/weak_ptr.htm for documentation.
 //
 
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <kit/local_shared_ptr.hpp>
+#include <kit/local_weak_ptr.hpp>
+#include <kit/make_local_shared.hpp>
+#include <kit/enable_shared_from_this.hpp>
 
-#endif // BOOST_SMART_PTR_HPP_INCLUDED
+#endif // KIT_SMART_PTR_HPP_INCLUDED

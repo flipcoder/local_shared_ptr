@@ -9,7 +9,7 @@
 //
 
 
-#include <boost/shared_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
 #include "lightweight_test.hpp"
 
 //
@@ -62,7 +62,7 @@ private:
 
 int Y::instances = 0;
 
-static boost::shared_ptr<void> s_pv;
+static kit::local_shared_ptr<void> s_pv;
 
 class Z
 {
@@ -78,7 +78,7 @@ public:
     ~Z()
     {
         --instances;
-        s_pv = boost::shared_ptr<void>( new Y );
+        s_pv = kit::local_shared_ptr<void>( new Y );
     }
 
 private:
@@ -90,29 +90,29 @@ int Z::instances = 0;
 
 int main()
 {
-    BOOST_TEST( X::instances == 0 );
-    BOOST_TEST( Y::instances == 0 );
-    BOOST_TEST( Z::instances == 0 );
+    KIT_TEST( X::instances == 0 );
+    KIT_TEST( Y::instances == 0 );
+    KIT_TEST( Z::instances == 0 );
 
-    s_pv = boost::shared_ptr<void>( new Z );
+    s_pv = kit::local_shared_ptr<void>( new Z );
 
-    BOOST_TEST( X::instances == 0 );
-    BOOST_TEST( Y::instances == 0 );
-    BOOST_TEST( Z::instances == 1 );
+    KIT_TEST( X::instances == 0 );
+    KIT_TEST( Y::instances == 0 );
+    KIT_TEST( Z::instances == 1 );
 
-    s_pv = boost::shared_ptr<void>( new X );
+    s_pv = kit::local_shared_ptr<void>( new X );
 
-    BOOST_TEST( X::instances == 0 );
-    BOOST_TEST( Y::instances == 1 );
-    BOOST_TEST( Z::instances == 0 );
+    KIT_TEST( X::instances == 0 );
+    KIT_TEST( Y::instances == 1 );
+    KIT_TEST( Z::instances == 0 );
 
-    s_pv = boost::shared_ptr<void>();
+    s_pv = kit::local_shared_ptr<void>();
 
-    BOOST_TEST( X::instances == 0 );
-    BOOST_TEST( Y::instances == 0 );
-    BOOST_TEST( Z::instances == 0 );
+    KIT_TEST( X::instances == 0 );
+    KIT_TEST( Y::instances == 0 );
+    KIT_TEST( Z::instances == 0 );
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

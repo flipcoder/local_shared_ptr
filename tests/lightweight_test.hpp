@@ -1,5 +1,5 @@
-#ifndef BOOST_CORE_LIGHTWEIGHT_TEST_HPP
-#define BOOST_CORE_LIGHTWEIGHT_TEST_HPP
+#ifndef KIT_CORE_LIGHTWEIGHT_TEST_HPP
+#define KIT_CORE_LIGHTWEIGHT_TEST_HPP
 
 // MS compatible compilers support #pragma once
 
@@ -19,22 +19,22 @@
 //  http://www.boost.org/LICENSE_1_0.txt
 //
 
-//#include <boost/assert.hpp>
-//#include <boost/current_function.hpp>
-//#include <boost/core/no_exceptions_support.hpp>
+//#include <kit/assert.hpp>
+//#include <kit/current_function.hpp>
+//#include <kit/core/no_exceptions_support.hpp>
 #include <iostream>
 #include <cassert>
 
-#define BOOST_CURRENT_FUNCTION __func__
-#define BOOST_ASSERT(x) assert(x)
+#define KIT_CURRENT_FUNCTION __func__
+#define KIT_ASSERT(x) assert(x)
 
 //  IDE's like Visual Studio perform better if output goes to std::cout or
 //  some other stream, so allow user to configure output stream:
-#ifndef BOOST_LIGHTWEIGHT_TEST_OSTREAM
-# define BOOST_LIGHTWEIGHT_TEST_OSTREAM std::cerr
+#ifndef KIT_LIGHTWEIGHT_TEST_OSTREAM
+# define KIT_LIGHTWEIGHT_TEST_OSTREAM std::cerr
 #endif
 
-namespace boost
+namespace kit
 {
 
 namespace detail
@@ -48,7 +48,7 @@ struct report_errors_reminder
 
     ~report_errors_reminder()
     {
-        BOOST_ASSERT(called_report_errors_function);  // verify report_errors() was called  
+        KIT_ASSERT(called_report_errors_function);  // verify report_errors() was called  
     }
 };
 
@@ -67,7 +67,7 @@ inline int & test_errors()
 
 inline void test_failed_impl(char const * expr, char const * file, int line, char const * function)
 {
-    BOOST_LIGHTWEIGHT_TEST_OSTREAM
+    KIT_LIGHTWEIGHT_TEST_OSTREAM
       << file << "(" << line << "): test '" << expr << "' failed in function '"
       << function << "'" << std::endl;
     ++test_errors();
@@ -75,7 +75,7 @@ inline void test_failed_impl(char const * expr, char const * file, int line, cha
 
 inline void error_impl(char const * msg, char const * file, int line, char const * function)
 {
-    BOOST_LIGHTWEIGHT_TEST_OSTREAM
+    KIT_LIGHTWEIGHT_TEST_OSTREAM
       << file << "(" << line << "): " << msg << " in function '"
       << function << "'" << std::endl;
     ++test_errors();
@@ -83,7 +83,7 @@ inline void error_impl(char const * msg, char const * file, int line, char const
 
 inline void throw_failed_impl(char const * excep, char const * file, int line, char const * function)
 {
-   BOOST_LIGHTWEIGHT_TEST_OSTREAM
+   KIT_LIGHTWEIGHT_TEST_OSTREAM
     << file << "(" << line << "): Exception '" << excep << "' not thrown in function '"
     << function << "'" << std::endl;
    ++test_errors();
@@ -98,7 +98,7 @@ template<class T, class U> inline void test_eq_impl( char const * expr1, char co
     }
     else
     {
-        BOOST_LIGHTWEIGHT_TEST_OSTREAM
+        KIT_LIGHTWEIGHT_TEST_OSTREAM
             << file << "(" << line << "): test '" << expr1 << " == " << expr2
             << "' failed in function '" << function << "': "
             << "'" << t << "' != '" << u << "'" << std::endl;
@@ -115,7 +115,7 @@ template<class T, class U> inline void test_ne_impl( char const * expr1, char co
     }
     else
     {
-        BOOST_LIGHTWEIGHT_TEST_OSTREAM
+        KIT_LIGHTWEIGHT_TEST_OSTREAM
             << file << "(" << line << "): test '" << expr1 << " != " << expr2
             << "' failed in function '" << function << "': "
             << "'" << t << "' == '" << u << "'" << std::endl;
@@ -127,49 +127,49 @@ template<class T, class U> inline void test_ne_impl( char const * expr1, char co
 
 inline int report_errors()
 {
-    boost::detail::report_errors_remind().called_report_errors_function = true;
+    kit::detail::report_errors_remind().called_report_errors_function = true;
 
-    int errors = boost::detail::test_errors();
+    int errors = kit::detail::test_errors();
 
     if( errors == 0 )
     {
-        BOOST_LIGHTWEIGHT_TEST_OSTREAM
+        KIT_LIGHTWEIGHT_TEST_OSTREAM
           << "No errors detected." << std::endl;
         return 0;
     }
     else
     {
-        BOOST_LIGHTWEIGHT_TEST_OSTREAM
+        KIT_LIGHTWEIGHT_TEST_OSTREAM
           << errors << " error" << (errors == 1? "": "s") << " detected." << std::endl;
         return 1;
     }
 }
 
-} // namespace boost
+} // namespace kit
 
-#define BOOST_TEST(expr) ((expr)? (void)0: ::boost::detail::test_failed_impl(#expr, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION))
+#define KIT_TEST(expr) ((expr)? (void)0: ::kit::detail::test_failed_impl(#expr, __FILE__, __LINE__, KIT_CURRENT_FUNCTION))
 
-#define BOOST_ERROR(msg) ( ::boost::detail::error_impl(msg, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION) )
+#define KIT_ERROR(msg) ( ::kit::detail::error_impl(msg, __FILE__, __LINE__, KIT_CURRENT_FUNCTION) )
 
-#define BOOST_TEST_EQ(expr1,expr2) ( ::boost::detail::test_eq_impl(#expr1, #expr2, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION, expr1, expr2) )
-#define BOOST_TEST_NE(expr1,expr2) ( ::boost::detail::test_ne_impl(#expr1, #expr2, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION, expr1, expr2) )
+#define KIT_TEST_EQ(expr1,expr2) ( ::kit::detail::test_eq_impl(#expr1, #expr2, __FILE__, __LINE__, KIT_CURRENT_FUNCTION, expr1, expr2) )
+#define KIT_TEST_NE(expr1,expr2) ( ::kit::detail::test_ne_impl(#expr1, #expr2, __FILE__, __LINE__, KIT_CURRENT_FUNCTION, expr1, expr2) )
 
-#ifndef BOOST_NO_EXCEPTIONS
-   #define BOOST_TEST_THROWS( EXPR, EXCEP )                    \
+#ifndef KIT_NO_EXCEPTIONS
+   #define KIT_TEST_THROWS( EXPR, EXCEP )                    \
       try {                                                    \
          EXPR;                                                 \
-         ::boost::detail::throw_failed_impl                    \
-         (#EXCEP, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION); \
+         ::kit::detail::throw_failed_impl                    \
+         (#EXCEP, __FILE__, __LINE__, KIT_CURRENT_FUNCTION); \
       }                                                        \
       catch(EXCEP const&) {                                    \
       }                                                        \
       catch(...) {                                             \
-         ::boost::detail::throw_failed_impl                    \
-         (#EXCEP, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION); \
+         ::kit::detail::throw_failed_impl                    \
+         (#EXCEP, __FILE__, __LINE__, KIT_CURRENT_FUNCTION); \
       }                                                        \
    //
 #else
-   #define BOOST_TEST_THROWS( EXPR, EXCEP )
+   #define KIT_TEST_THROWS( EXPR, EXCEP )
 #endif
 
-#endif // #ifndef BOOST_CORE_LIGHTWEIGHT_TEST_HPP
+#endif // #ifndef KIT_CORE_LIGHTWEIGHT_TEST_HPP

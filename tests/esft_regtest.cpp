@@ -12,15 +12,15 @@
 //
 
 #include "lightweight_test.hpp"
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <kit/enable_shared_from_this.hpp>
+#include <kit/local_shared_ptr.hpp>
+#include <kit/local_weak_ptr.hpp>
 #include <memory>
 #include <string>
 
 namespace esft_regtest {
 
-class X: public boost::enable_shared_from_this< X >
+class X: public kit::enable_shared_from_this< X >
 {
 private:
 
@@ -46,8 +46,8 @@ public:
 
     ~X()
     {
-        BOOST_TEST( deleted_ == expected_ );
-        BOOST_TEST( destroyed_ == 0 );
+        KIT_TEST( deleted_ == expected_ );
+        KIT_TEST( destroyed_ == 0 );
         ++destroyed_;
         --instances;
     }
@@ -70,73 +70,73 @@ int X::instances = 0;
 
 void test()
 {
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
         X x( 0 );
-        BOOST_TEST( X::instances == 1 );
+        KIT_TEST( X::instances == 1 );
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
 //    {
 //        std::auto_ptr<X> px( new X( 0 ) );
-//        BOOST_TEST( X::instances == 1 );
+//        KIT_TEST( X::instances == 1 );
 //    }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr<X> px( new X( 0 ) );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr<X> px( new X( 0 ) );
+        KIT_TEST( X::instances == 1 );
 
-        boost::weak_ptr<X> wp( px );
-        BOOST_TEST( !wp.expired() );
+        kit::local_weak_ptr<X> wp( px );
+        KIT_TEST( !wp.expired() );
 
         px.reset();
 
-        BOOST_TEST( wp.expired() );
+        KIT_TEST( wp.expired() );
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
         X x( 1 );
-        boost::shared_ptr<X> px( &x, X::deleter );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr<X> px( &x, X::deleter );
+        KIT_TEST( X::instances == 1 );
 
-        X::deleter_type * pd = boost::get_deleter<X::deleter_type>( px );
-        BOOST_TEST( pd != 0 && *pd == X::deleter );
+        X::deleter_type * pd = kit::get_deleter<X::deleter_type>( px );
+        KIT_TEST( pd != 0 && *pd == X::deleter );
 
-        boost::weak_ptr<X> wp( px );
-        BOOST_TEST( !wp.expired() );
+        kit::local_weak_ptr<X> wp( px );
+        KIT_TEST( !wp.expired() );
 
         px.reset();
 
-        BOOST_TEST( wp.expired() );
+        KIT_TEST( wp.expired() );
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr<X> px( new X( 1 ), X::deleter2 );
-        BOOST_TEST( X::instances == 1 );
+        kit::local_shared_ptr<X> px( new X( 1 ), X::deleter2 );
+        KIT_TEST( X::instances == 1 );
 
-        X::deleter_type * pd = boost::get_deleter<X::deleter_type>( px );
-        BOOST_TEST( pd != 0 && *pd == X::deleter2 );
+        X::deleter_type * pd = kit::get_deleter<X::deleter_type>( px );
+        KIT_TEST( pd != 0 && *pd == X::deleter2 );
 
-        boost::weak_ptr<X> wp( px );
-        BOOST_TEST( !wp.expired() );
+        kit::local_weak_ptr<X> wp( px );
+        KIT_TEST( !wp.expired() );
 
         px.reset();
 
-        BOOST_TEST( wp.expired() );
+        KIT_TEST( wp.expired() );
     }
 
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 }
 
-struct V: public boost::enable_shared_from_this<V>
+struct V: public kit::enable_shared_from_this<V>
 {
     virtual ~V() {}
     std::string m_;
@@ -154,15 +154,15 @@ struct W: V2, V
 
 void test2()
 {
-    boost::shared_ptr<W> p( new W );
+    kit::local_shared_ptr<W> p( new W );
 }
 
 void test3()
 {
     V * p = new W;
-    boost::shared_ptr<void> pv( p );
-    BOOST_TEST( pv.get() == p );
-    BOOST_TEST( pv.use_count() == 1 );
+    kit::local_shared_ptr<void> pv( p );
+    KIT_TEST( pv.get() == p );
+    KIT_TEST( pv.use_count() == 1 );
 }
 
 struct null_deleter
@@ -172,19 +172,19 @@ struct null_deleter
 
 void test4()
 {
-    boost::shared_ptr<V> pv( new V );
-    boost::shared_ptr<V> pv2( pv.get(), null_deleter() );
-    BOOST_TEST( pv2.get() == pv.get() );
-    BOOST_TEST( pv2.use_count() == 1 );
+    kit::local_shared_ptr<V> pv( new V );
+    kit::local_shared_ptr<V> pv2( pv.get(), null_deleter() );
+    KIT_TEST( pv2.get() == pv.get() );
+    KIT_TEST( pv2.use_count() == 1 );
 }
 
 void test5()
 {
     V v;
 
-    boost::shared_ptr<V> p1( &v, null_deleter() );
-    BOOST_TEST( p1.get() == &v );
-    BOOST_TEST( p1.use_count() == 1 );
+    kit::local_shared_ptr<V> p1( &v, null_deleter() );
+    KIT_TEST( p1.get() == &v );
+    KIT_TEST( p1.use_count() == 1 );
 
     try
     {
@@ -192,14 +192,14 @@ void test5()
     }
     catch( ... )
     {
-        BOOST_ERROR( "p1->shared_from_this() failed" );
+        KIT_ERROR( "p1->shared_from_this() failed" );
     }
 
     p1.reset();
 
-    boost::shared_ptr<V> p2( &v, null_deleter() );
-    BOOST_TEST( p2.get() == &v );
-    BOOST_TEST( p2.use_count() == 1 );
+    kit::local_shared_ptr<V> p2( &v, null_deleter() );
+    KIT_TEST( p2.get() == &v );
+    KIT_TEST( p2.use_count() == 1 );
 
     try
     {
@@ -207,7 +207,7 @@ void test5()
     }
     catch( ... )
     {
-        BOOST_ERROR( "p2->shared_from_this() failed" );
+        KIT_ERROR( "p2->shared_from_this() failed" );
     }
 }
 
@@ -219,7 +219,7 @@ int main()
     test4();
     test5();
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }

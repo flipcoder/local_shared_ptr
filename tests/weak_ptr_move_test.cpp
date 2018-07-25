@@ -8,8 +8,8 @@
 // http://www.boost.org/LICENSE_1_0.txt
 //
 
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <kit/local_shared_ptr.hpp>
+#include <kit/local_weak_ptr.hpp>
 #include "lightweight_test.hpp"
 #include <utility>
 
@@ -39,78 +39,78 @@ long X::instances = 0;
 
 int main()
 {
-    BOOST_TEST( X::instances == 0 );
+    KIT_TEST( X::instances == 0 );
 
     {
-        boost::shared_ptr<X> p_( new X );
-        boost::weak_ptr<X> p( p_ );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p.use_count() == 1 );
+        kit::local_shared_ptr<X> p_( new X );
+        kit::local_weak_ptr<X> p( p_ );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p.use_count() == 1 );
 
-        boost::weak_ptr<X> p2( std::move( p ) );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p2.use_count() == 1 );
-        BOOST_TEST( p.expired() );
+        kit::local_weak_ptr<X> p2( std::move( p ) );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p2.use_count() == 1 );
+        KIT_TEST( p.expired() );
 
-        boost::weak_ptr<void> p3( std::move( p2 ) );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p3.use_count() == 1 );
-        BOOST_TEST( p2.expired() );
+        kit::local_weak_ptr<void> p3( std::move( p2 ) );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p3.use_count() == 1 );
+        KIT_TEST( p2.expired() );
 
         p_.reset();
-        BOOST_TEST( X::instances == 0 );
-        BOOST_TEST( p3.expired() );
+        KIT_TEST( X::instances == 0 );
+        KIT_TEST( p3.expired() );
     }
 
     {
-        boost::shared_ptr<X> p_( new X );
-        boost::weak_ptr<X> p( p_ );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p.use_count() == 1 );
+        kit::local_shared_ptr<X> p_( new X );
+        kit::local_weak_ptr<X> p( p_ );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p.use_count() == 1 );
 
-        boost::weak_ptr<X> p2;
-        p2 = static_cast< boost::weak_ptr<X> && >( p );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p2.use_count() == 1 );
-        BOOST_TEST( p.expired() );
+        kit::local_weak_ptr<X> p2;
+        p2 = static_cast< kit::local_weak_ptr<X> && >( p );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p2.use_count() == 1 );
+        KIT_TEST( p.expired() );
 
-        boost::weak_ptr<void> p3;
+        kit::local_weak_ptr<void> p3;
         p3 = std::move( p2 );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p3.use_count() == 1 );
-        BOOST_TEST( p2.expired() );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p3.use_count() == 1 );
+        KIT_TEST( p2.expired() );
 
         p_.reset();
-        BOOST_TEST( X::instances == 0 );
-        BOOST_TEST( p3.expired() );
+        KIT_TEST( X::instances == 0 );
+        KIT_TEST( p3.expired() );
     }
 
     {
-        boost::shared_ptr<X> p_( new X );
-        boost::weak_ptr<X> p( p_ );
-        BOOST_TEST( X::instances == 1 );
-        BOOST_TEST( p.use_count() == 1 );
+        kit::local_shared_ptr<X> p_( new X );
+        kit::local_weak_ptr<X> p( p_ );
+        KIT_TEST( X::instances == 1 );
+        KIT_TEST( p.use_count() == 1 );
 
-        boost::shared_ptr<X> p_2( new X );
-        boost::weak_ptr<X> p2( p_2 );
-        BOOST_TEST( X::instances == 2 );
+        kit::local_shared_ptr<X> p_2( new X );
+        kit::local_weak_ptr<X> p2( p_2 );
+        KIT_TEST( X::instances == 2 );
         p2 = std::move( p );
-        BOOST_TEST( X::instances == 2 );
-        BOOST_TEST( p2.use_count() == 1 );
-        BOOST_TEST( p.expired() );
-        BOOST_TEST( p2.lock() != p_2 );
+        KIT_TEST( X::instances == 2 );
+        KIT_TEST( p2.use_count() == 1 );
+        KIT_TEST( p.expired() );
+        KIT_TEST( p2.lock() != p_2 );
 
-        boost::shared_ptr<void> p_3( new X );
-        boost::weak_ptr<void> p3( p_3 );
-        BOOST_TEST( X::instances == 3 );
+        kit::local_shared_ptr<void> p_3( new X );
+        kit::local_weak_ptr<void> p3( p_3 );
+        KIT_TEST( X::instances == 3 );
         p3 = std::move( p2 );
-        BOOST_TEST( X::instances == 3 );
-        BOOST_TEST( p3.use_count() == 1 );
-        BOOST_TEST( p2.expired() );
-        BOOST_TEST( p3.lock() != p_3 );
+        KIT_TEST( X::instances == 3 );
+        KIT_TEST( p3.use_count() == 1 );
+        KIT_TEST( p2.expired() );
+        KIT_TEST( p3.lock() != p_3 );
     }
 
-    return boost::report_errors();
+    return kit::report_errors();
 }
 
 }
